@@ -1873,12 +1873,60 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       scanner: '',
-      codigoQR: ''
+      codigoQR: [],
+      nroDNI: '',
+      condicionDNI: '',
+      nombre: '',
+      aPaterno: '',
+      aMaterno: '',
+      cantidad: '',
+      telefono: '',
+      tituloModal: ''
     };
   },
   methods: {
@@ -1891,13 +1939,27 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     buscarDNI: function buscarDNI() {
-      axios.post('/buscarDNI', {
-        'DNI': '71887663'
-      }).then(function (response) {
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error);
-      });
+      var _this = this;
+
+      if (this.nroDNI.length == 8) {
+        axios.post('/buscarDNI', {
+          'dni': this.nroDNI
+        }).then(function (response) {
+          // JSON responses are automatically parsed.
+          var me = _this;
+          me.nombre = response.data.nombres;
+          me.aPaterno = response.data.apellidoPaterno;
+          me.aMaterno = response.data.apellidoMaterno;
+
+          if (me.aPaterno.length > 0) {
+            me.condicionDNI = 'DNI Validado';
+          } else {
+            me.condicionDNI = 'Este DNI no puede entrar al canjeo';
+          }
+        }).catch(function (e) {
+          console.log(error);
+        });
+      }
     },
     scanearQR: function scanearQR() {
       var me = this;
@@ -1905,9 +1967,11 @@ __webpack_require__.r(__webpack_exports__);
         video: document.getElementById('modalCamera')
       });
       me.scanner.addListener('scan', function (content) {
-        console.log(content);
-        me.codigoQR = content;
-        me.scanner.stop();
+        if (me.codigoQR.indexOf(content) == -1) {
+          me.codigoQR.push(content);
+          console.log(content);
+        } // me.scanner.stop();
+
       });
       Instascan.Camera.getCameras().then(function (cameras) {
         if (cameras.length > 0) {
@@ -1923,7 +1987,26 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       me.scanner.stop();
     },
-    abrirModal: function abrirModal() {
+    abrirModal: function abrirModal(modelo, accion) {
+      var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+      switch (modelo) {
+        case "ventaX":
+          {
+            switch (accion) {
+              case 'escanear':
+                {
+                  this.modal = 1;
+                  this.tituloModal = 'Escanee el codigo QR';
+                  break;
+                }
+
+              case 'vender':
+                {}
+            }
+          }
+      }
+
       this.scanearQR();
     }
   },
@@ -6392,7 +6475,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* apply a natural box layout model to all elements, but allowing components to change */\nhtml {\n  box-sizing: border-box;\n}\n*, *:before, *:after {\n  box-sizing: inherit;\n}\n.content{\n    position: relative;\n    width: 100%;\n    height: 100%;\n}\n.content>h1{\n    text-align: center;\n}\n.mi-contenido{\n    height: 100%;\n    width: 80%;\n    display: flex;\n    flex-wrap: wrap;\n    flex-direction: row;\n    justify-content: center;\n    align-items: center;\n    margin: 0 auto;\n}\n.col-4{\n    width: 33.33333333%\n}\n.col-8{\n    width: 66.66666666%;\n}\n.d-flex{\n    display: flex;\n}\n.bg-azul{\n    background-color: rgba(2, 24, 150, 0.11);\n}\n.datos{\n    flex-direction: column;\n    justify-content: center;\n    align-self: center;\n}\n.datos>div{\n    margin-bottom: 1rem;\n}\n.datos>div>label{\n     width: 32%;\n    /* text-align: right; */\n    /* padding-right: 2rem; */\n}\n.datos>div>input{\n    border: 1px solid #ccc;\n    border-radius: .7rem;\n    height: 40px;\n    width: 65%;\n    text-align: center;\n}\n.modal-dialog{\n    box-sizing: border-box;\n     height: 100%;\n}\n.modal-content{\n    height: 100%;\n}\n.modal-body{\n   /* height: 100%; */\n    width: 100%;\n}\n#modalCamera{\n    width: 100%;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* apply a natural box layout model to all elements, but allowing components to change */\nhtml {\r\n  box-sizing: border-box;\n}\n*, *:before, *:after {\r\n  box-sizing: inherit;\n}\nlabel{\r\n     width: 32%;\r\n     /* padding-bottom: 0; */\r\n    /* text-align: right; */\r\n    /* padding-right: 2rem; */\n}\ninput, input:before , input:after{\r\n    border: 1px solid #ccc;\r\n    border-radius: .7rem;\r\n    height: 40px;\r\n    width: 65%;\r\n    text-align: center;\n}\n.content{\r\n    position: relative;\r\n    width: 100%;\r\n    height: 100%;\n}\n.content>h1{\r\n    text-align: center;\n}\n.content-wrapper{\r\n    /* overflow: scroll;\r\n    max-height: 90vh; */\n}\n.mi-contenido{\r\n    height: 100%;\r\n    width: 80%;\r\n    display: flex;\r\n    flex-wrap: wrap;\r\n    flex-direction: row;\r\n    justify-content: center;\r\n    align-items: center;\r\n    margin: 0 auto;\n}\n.col-4{\r\n    width: 33.33333333%\n}\n.col-8{\r\n    width: 66.66666666%;\n}\n.d-flex{\r\n    display: flex;\n}\n.bg-azul{\r\n    background-color: rgba(2, 24, 150, 0.11);\n}\n.right{\r\n    float: right;\n}\n.datos{\r\n    flex-direction: column;\r\n    justify-content: center;\r\n    align-self: center;\n}\n.datos>div{\r\n    margin-bottom: 1rem;\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.datos>.col-sm-6{\r\n    display: inline-block;\n}\n.datos>.col-sm-6>div{\r\n    width: 100%;\r\n    margin-bottom: .3rem;\r\n    /* display: inline-block; */\r\n    /*  */\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.vender{\r\n    margin-top: 2rem;\n}\n.modal-dialog{\r\n    box-sizing: border-box;\r\n      height: auto;\n}\n.modal-content{\r\n    height: 100%;\n}\n.modal-body{\r\n    height: 100%; \r\n    width: 100%;\n}\n#modalCamera{\r\n    width: 100%;\n}\n.mostrar{\r\n    display: block !important;\r\n    height: 100%;\r\n    width: 100%;\r\n    opacity: 1 !important;\r\n    position: absolute !important;background-color: #3c29297a;\n}\r\n", ""]);
 
 // exports
 
@@ -37829,17 +37912,89 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: " " }, [
+  return _c("div", { staticClass: "contenido-general " }, [
     _vm._m(0),
     _vm._v(" "),
     _c("div", { staticClass: "mi-contenido container-fluid" }, [
       _c("section", { staticClass: "content" }, [
-        _c("h2", [_vm._v("Marca X")]),
-        _vm._v(" "),
         _c("form", { staticClass: "datos d-flex" }, [
-          _vm._m(1),
+          _c("div", { staticClass: "dni" }, [
+            _c("label", { attrs: { for: "dni" } }, [_vm._v("DNI")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.nroDNI,
+                  expression: "nroDNI"
+                }
+              ],
+              staticClass: "onlyNum",
+              attrs: { maxlength: 8, id: "dni", placeholder: "Ingrese DNI" },
+              domProps: { value: _vm.nroDNI },
+              on: {
+                keyup: function($event) {
+                  return _vm.buscarDNI()
+                },
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.nroDNI = $event.target.value
+                }
+              }
+            })
+          ]),
           _vm._v(" "),
-          _vm._m(2),
+          _c("div"),
+          _vm._v(" "),
+          _c("div", { staticClass: "dni-resultado" }, [
+            _c("p", [
+              _c("span", {
+                staticClass: "text-info",
+                domProps: { textContent: _vm._s(_vm.condicionDNI) }
+              }),
+              _vm._v(" "),
+              _c("span", { domProps: { textContent: _vm._s(_vm.nombre) } }),
+              _vm._v(" "),
+              _c("span", { domProps: { textContent: _vm._s(_vm.aPaterno) } }),
+              _vm._v(" "),
+              _c("span", { domProps: { textContent: _vm._s(_vm.aMaterno) } })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "cantidad" }, [
+            _c("label", { attrs: { for: "cantidad" } }, [
+              _vm._v("Cantidad de balones")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.cantidad,
+                  expression: "cantidad"
+                }
+              ],
+              staticClass: "onlyNum",
+              attrs: {
+                type: "number",
+                placeholder: "Cantidad de balones",
+                value: "1"
+              },
+              domProps: { value: _vm.cantidad },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.cantidad = $event.target.value
+                }
+              }
+            })
+          ]),
           _vm._v(" "),
           _c("div", { staticClass: "cupon" }, [
             _c("label", { attrs: { for: "cupon" } }, [
@@ -37858,7 +38013,33 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _vm._m(3)
+          _c("div", { staticClass: "telefono" }, [
+            _c("label", { attrs: { for: "numero" } }, [
+              _vm._v("Numero Celular")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.telefono,
+                  expression: "telefono"
+                }
+              ],
+              staticClass: "onlyNum",
+              attrs: { type: "number", pattern: "[0-9]{9}" },
+              domProps: { value: _vm.telefono },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.telefono = $event.target.value
+                }
+              }
+            })
+          ])
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "box" }, [
@@ -38157,6 +38338,8 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
+        _vm._m(1),
+        _vm._v(" "),
         _c(
           "div",
           {
@@ -38182,13 +38365,13 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _vm._m(4),
-                _vm._v(" "),
-                _c("div", { staticClass: "modal-footer" }, [
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("video", { attrs: { id: "modalCamera" } }),
+                  _vm._v(" "),
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-danger btn-lg",
+                      staticClass: "btn btn-danger btn-lg right",
                       attrs: {
                         type: "button",
                         "data-toggle": "modal",
@@ -38197,7 +38380,9 @@ var render = function() {
                       on: { click: _vm.stopScanner }
                     },
                     [_vm._v("Cerrar")]
-                  )
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "clearfix" })
                 ])
               ])
             ])
@@ -38234,61 +38419,59 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "dni" }, [
-      _c("label", { attrs: { for: "dni" } }, [_vm._v("DNI")]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "onlyNum",
-        attrs: { id: "dni", placeholder: "Ingrese DNI" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "cantidad" }, [
-      _c("label", { attrs: { for: "cantidad" } }, [
-        _vm._v("Cantidad de balones")
-      ]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "onlyNum",
-        attrs: {
-          type: "text",
-          placeholder: "Cantidad de balones",
-          name: "cantidad",
-          id: "cantidad",
-          value: "1"
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "telefono" }, [
-      _c("label", { attrs: { for: "numero" } }, [_vm._v("Numero Celular")]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "onlyNum",
-        attrs: {
-          type: "tel",
-          name: "numero",
-          pattern: "[0-9]{9}",
-          id: "numero"
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-body" }, [
-      _c("video", { attrs: { id: "modalCamera" } })
-    ])
+    return _c(
+      "form",
+      { staticClass: "datos", attrs: { action: "", method: "post" } },
+      [
+        _c("div", { staticClass: "col-sm-6" }),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-sm-6" }, [
+          _c("div", { staticClass: "precio" }, [
+            _c("label", { staticClass: "col-xs-6", attrs: { for: "precio" } }, [
+              _vm._v("Precio")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "col-xs-6",
+              attrs: { type: "text", name: "precio", id: "precio" }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "descuento" }, [
+            _c(
+              "label",
+              { staticClass: "col-xs-6", attrs: { for: "descuento" } },
+              [_vm._v("Descuento ")]
+            ),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "col-xs-6",
+              attrs: { type: "text", name: "descuento", id: "descuento" }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "total" }, [
+            _c("label", { staticClass: "col-xs-6", attrs: { for: "total" } }, [
+              _vm._v("Total a pagar")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "col-xs-6",
+              attrs: { type: "text", name: "total", id: "total" }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div"),
+          _vm._v(" "),
+          _c("div", { staticClass: "vender" }, [
+            _c("input", {
+              staticClass: "btn btn-info",
+              attrs: { type: "button", value: "Validar venta" }
+            })
+          ])
+        ])
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -50596,7 +50779,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\Users\miguelito\Desktop\PRIMAX\PrimaxSoftware\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\PRIMAX\PrimaxSoftware\resources\js\app.js */"./resources/js/app.js");
 
 
 /***/ })

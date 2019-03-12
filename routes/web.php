@@ -17,7 +17,7 @@ Route::get('/', function () {
 Route::get('/cupon', 'CuponController@index');
 Route::post('/crear', 'CuponController@store');
 
-Route::get('/buscarDNI', 'PersonaController@buscarPersona');
+Route::post('/buscarDNI', 'PersonaController@buscarPersona');
 Route::get('/login', function () {
     return view('login');
 });

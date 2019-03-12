@@ -1,5 +1,5 @@
 <template>
-    <div class=" ">
+    <div class="contenido-general ">
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
@@ -14,17 +14,30 @@
          <!-- Main content -->
          <div class="mi-contenido container-fluid">
              <section class="content">
-                <h2>Marca X</h2>
                 <form class="datos d-flex">
                     <div class="dni">
                         <label class="" for="dni">DNI</label>
                         <!-- <input type="text" name="DNI" id="dni" pattern="[0-9]{9}" placeholder="Ingrese el Nro de DNI"> -->
-                        <input id="dni" class="onlyNum"  placeholder="Ingrese DNI">
+                        <input v-model="nroDNI" :maxlength="8" v-on:keyup="buscarDNI()" id="dni" class="onlyNum"  placeholder="Ingrese DNI">
+                        
+                    </div>
+                    <div>
 
+                    </div>
+                    <div class="dni-resultado">
+
+                            
+                            <p>
+                                <span v-text="condicionDNI" class="text-info"></span>
+                                <span v-text="nombre"></span>
+                                <span v-text="aPaterno"></span>
+                                <span v-text="aMaterno"></span>
+                                
+                            </p>
                     </div>
                     <div class="cantidad">
                         <label class="" for="cantidad" >Cantidad de balones</label>
-                        <input type="text" class="onlyNum" placeholder="Cantidad de balones" name="cantidad" id="cantidad" value="1">
+                        <input v-model="cantidad" type="number" class="onlyNum" placeholder="Cantidad de balones" value="1">
                         
                     </div>
                     <div class="cupon">
@@ -33,7 +46,7 @@
                     </div>
                     <div class="telefono">
                         <label class="" for="numero">Numero Celular</label>
-                        <input type="tel" class="onlyNum" name="numero" pattern="[0-9]{9}" id="numero">
+                        <input v-model="telefono" type="number" class="onlyNum" pattern="[0-9]{9}" >
                     </div>
                 </form>
                 
@@ -74,31 +87,58 @@
                     </div>
                 </div>
 
+                <form action="" class="datos" method="post">
+                    <div class="col-sm-6"></div>
+                    <div class="col-sm-6">
+                        <div class="precio">
+                            <label class="col-xs-6" for="precio">Precio</label>
+                            <input  class="col-xs-6"  type="text" name="precio" id="precio">
+                        </div>
+                        
+                        <div class="descuento">
+                            <label class="col-xs-6" for="descuento">Descuento </label>
+                            <input class="col-xs-6" type="text" name="descuento" id="descuento">
+                        </div>
+
+                        <div class="total">
+                            <label class="col-xs-6" for="total">Total a pagar</label>
+                            <input class="col-xs-6" type="text" name="total" id="total">
+                        </div>
+                        <div></div>
+                        <div class="vender">
+                            <input type="button" class="btn btn-info" value="Validar venta">
+                        </div>
+                        
+                    </div>
+                    
+                </form>
                 
                 <!-- Modal -->
                 <div id="myModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
+                    <div class="modal-dialog">
 
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button @click="stopScanner" type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Escanee el codigo QR</h4>
-                        </div>
-                        <div class="modal-body">
-                            <video id="modalCamera">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button @click="stopScanner" type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Escanee el codigo QR</h4>
+                            </div>
+                            <div class="modal-body">
+                                <video id="modalCamera">
 
-                            </video>
+                                </video>
+                                <button type="button" @click="stopScanner" class="btn btn-danger btn-lg right" data-toggle="modal" data-target="#myModal">Cerrar</button>
+
+                                
+
+                                <div class="clearfix"></div>
+                            </div>
+
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" @click="stopScanner" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModal">Cerrar</button>
-                            <!-- <button type="button" @click="stopScanner" class="btn btn-default" data-dismiss="modal">Close</button> -->
-                        </div>
+
                     </div>
-
                 </div>
-                </div>
-            
+                
             </section>
         </div>
         
@@ -112,7 +152,15 @@ import TecactusApi from 'reniec-sunat-js';
         data() {
             return{
                 scanner: '',
-                codigoQR: ''
+                codigoQR: [],
+                nroDNI: '',
+                condicionDNI:'',
+                nombre: '',
+                aPaterno: '',
+                aMaterno:'',
+                cantidad: '',
+                telefono: '',
+                tituloModal: ''
             }
         },
         methods:{
@@ -126,16 +174,34 @@ import TecactusApi from 'reniec-sunat-js';
                     }
                 });
             },
+
             buscarDNI(){
-                axios.post('/buscarDNI', {
-                    'DNI' : '71887663'
-                })
-                .then(function (response) {
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                
+                    
+                    if (this.nroDNI.length == 8) {
+                        axios.post('/buscarDNI', {
+                        'dni' : this.nroDNI
+                        }).then(response => {
+                        // JSON responses are automatically parsed.
+                            let me = this;
+                            me.nombre= response.data.nombres;
+                            me.aPaterno= response.data.apellidoPaterno;
+                            me.aMaterno= response.data.apellidoMaterno;
+                            if (me.aPaterno.length > 0) {
+                                me.condicionDNI = 'DNI Validado'
+                                
+                            }else{
+                                me.condicionDNI = 'Este DNI no puede entrar al canjeo'
+                            }
+                            
+                        })
+                        .catch(e => {
+                            console.log(error);
+                        });
+                    }
+                    
+                
+                
 
 
             },
@@ -143,9 +209,14 @@ import TecactusApi from 'reniec-sunat-js';
                 let me = this;
                 me.scanner = new Instascan.Scanner({ video: document.getElementById('modalCamera') });
                 me.scanner.addListener('scan', function (content) {
-                    console.log(content);
-                    me.codigoQR = content;
-                    me.scanner.stop();
+                    
+                    if (me.codigoQR.indexOf(content) == -1) {
+                        me.codigoQR.push(content);
+                        console.log(content);
+                    }
+                    
+                    
+                    // me.scanner.stop();
                 });
                 Instascan.Camera.getCameras().then(function (cameras) {
                     if (cameras.length > 0) {
@@ -162,7 +233,27 @@ import TecactusApi from 'reniec-sunat-js';
                 let me = this;
                  me.scanner.stop();
             },
-            abrirModal(){
+            abrirModal(modelo, accion , data=[]){
+                switch (modelo) {
+                    case "ventaX":
+                    {
+                        switch (accion) {
+                            case 'escanear':
+                            {   
+                                this.modal = 1;
+                                this.tituloModal = 'Escanee el codigo QR'
+                                break
+                            } 
+                            case 'vender':
+                            {
+                                
+                            }    
+                        
+                        }
+                        
+                    }    
+                        
+                }
                 this.scanearQR();
             }
         },
@@ -183,6 +274,19 @@ html {
 *, *:before, *:after {
   box-sizing: inherit;
 }
+label{
+     width: 32%;
+     /* padding-bottom: 0; */
+    /* text-align: right; */
+    /* padding-right: 2rem; */
+}
+input, input:before , input:after{
+    border: 1px solid #ccc;
+    border-radius: .7rem;
+    height: 40px;
+    width: 65%;
+    text-align: center;
+}
 .content{
     position: relative;
     width: 100%;
@@ -190,6 +294,10 @@ html {
 }
 .content>h1{
     text-align: center;
+}
+.content-wrapper{
+    /* overflow: scroll;
+    max-height: 90vh; */
 }
 .mi-contenido{
     height: 100%;
@@ -213,6 +321,9 @@ html {
 .bg-azul{
     background-color: rgba(2, 24, 150, 0.11);
 }
+.right{
+    float: right;
+}
 .datos{
     flex-direction: column;
     justify-content: center;
@@ -220,33 +331,46 @@ html {
 }
 .datos>div{
     margin-bottom: 1rem;
+    display: flex;
+   justify-content: center;
+   align-items: center;
 }
-.datos>div>label{
-     width: 32%;
-    /* text-align: right; */
-    /* padding-right: 2rem; */
+.datos>.col-sm-6{
+    display: inline-block;
 }
-.datos>div>input{
-    border: 1px solid #ccc;
-    border-radius: .7rem;
-    height: 40px;
-    width: 65%;
-    text-align: center;
+.datos>.col-sm-6>div{
+    width: 100%;
+    margin-bottom: .3rem;
+    /* display: inline-block; */
+    /*  */
+    display: flex;
+   justify-content: center;
+   align-items: center;
+}
+.vender{
+    margin-top: 2rem;
 }
 
 .modal-dialog{
     box-sizing: border-box;
-     height: 100%;
+      height: auto; 
 }
 .modal-content{
     height: 100%;
 }
 .modal-body{
-   /* height: 100%; */
+    height: 100%; 
     width: 100%;
 }
 #modalCamera{
     width: 100%;
+}
+.mostrar{
+    display: block !important;
+    height: 100%;
+    width: 100%;
+    opacity: 1 !important;
+    position: absolute !important;background-color: #3c29297a;
 }
 </style>
 

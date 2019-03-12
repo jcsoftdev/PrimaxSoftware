@@ -81,9 +81,9 @@ class PersonaController extends Controller
     {
         //
     }
-    public function buscarPersona(){
+    public function buscarPersona(Request $request){
         // require 'vendor/autoload.php';
-        $dni = '20408136';
+        $dni = $request->dni;
         $cs = new Dni();
         $cs->setClient(new ContextClient());
 

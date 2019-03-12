@@ -23,6 +23,7 @@ class CreateVentasTable extends Migration
             $table->integer('idusuario')->unsigned();
             $table->foreign('idusuario')->references('id')->on('users');
             $table->date('hora_fecha')->default(now());
+            $table->string('localizacion',191);
             $table->decimal('total',2);
             $table->timestamps();
         });
