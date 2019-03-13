@@ -1913,6 +1913,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1937,9 +1944,12 @@ __webpack_require__.r(__webpack_exports__);
           return false;
         }
       });
+      ;
     },
     buscarDNI: function buscarDNI() {
       var _this = this;
+
+      this.condicionDNI = 'Este DNI no puede entrar al canjeo';
 
       if (this.nroDNI.length == 8) {
         axios.post('/buscarDNI', {
@@ -1951,13 +1961,13 @@ __webpack_require__.r(__webpack_exports__);
           me.aPaterno = response.data.apellidoPaterno;
           me.aMaterno = response.data.apellidoMaterno;
 
-          if (me.aPaterno.length > 0) {
-            me.condicionDNI = 'DNI Validado';
-          } else {
-            me.condicionDNI = 'Este DNI no puede entrar al canjeo';
+          if (me.nombre != undefined) {
+            if (me.aPaterno.length > 0 && me.nroDNI.length == 8) {
+              me.condicionDNI = 'DNI Validado';
+            }
           }
         }).catch(function (e) {
-          console.log(error);
+          console.log(e);
         });
       }
     },
@@ -1987,26 +1997,23 @@ __webpack_require__.r(__webpack_exports__);
       var me = this;
       me.scanner.stop();
     },
-    abrirModal: function abrirModal(modelo, accion) {
-      var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-
-      switch (modelo) {
-        case "ventaX":
-          {
-            switch (accion) {
-              case 'escanear':
-                {
-                  this.modal = 1;
-                  this.tituloModal = 'Escanee el codigo QR';
-                  break;
-                }
-
-              case 'vender':
-                {}
-            }
-          }
-      }
-
+    abrirModal: function abrirModal() {
+      // switch (modelo) {
+      //     case "ventaX":
+      //     {
+      //         switch (accion) {
+      //             case 'escanear':
+      //             {   
+      //                 this.modal = 1;
+      //                 this.tituloModal = 'Escanee el codigo QR'
+      //                 break
+      //             } 
+      //             case 'vender':
+      //             {
+      //             }    
+      //         }
+      //     }    
+      // }
       this.scanearQR();
     }
   },
@@ -6475,7 +6482,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* apply a natural box layout model to all elements, but allowing components to change */\nhtml {\r\n  box-sizing: border-box;\n}\n*, *:before, *:after {\r\n  box-sizing: inherit;\n}\nlabel{\r\n     width: 32%;\r\n     /* padding-bottom: 0; */\r\n    /* text-align: right; */\r\n    /* padding-right: 2rem; */\n}\ninput, input:before , input:after{\r\n    border: 1px solid #ccc;\r\n    border-radius: .7rem;\r\n    height: 40px;\r\n    width: 65%;\r\n    text-align: center;\n}\n.content{\r\n    position: relative;\r\n    width: 100%;\r\n    height: 100%;\n}\n.content>h1{\r\n    text-align: center;\n}\n.content-wrapper{\r\n    /* overflow: scroll;\r\n    max-height: 90vh; */\n}\n.mi-contenido{\r\n    height: 100%;\r\n    width: 80%;\r\n    display: flex;\r\n    flex-wrap: wrap;\r\n    flex-direction: row;\r\n    justify-content: center;\r\n    align-items: center;\r\n    margin: 0 auto;\n}\n.col-4{\r\n    width: 33.33333333%\n}\n.col-8{\r\n    width: 66.66666666%;\n}\n.d-flex{\r\n    display: flex;\n}\n.bg-azul{\r\n    background-color: rgba(2, 24, 150, 0.11);\n}\n.right{\r\n    float: right;\n}\n.datos{\r\n    flex-direction: column;\r\n    justify-content: center;\r\n    align-self: center;\n}\n.datos>div{\r\n    margin-bottom: 1rem;\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.datos>.col-sm-6{\r\n    display: inline-block;\n}\n.datos>.col-sm-6>div{\r\n    width: 100%;\r\n    margin-bottom: .3rem;\r\n    /* display: inline-block; */\r\n    /*  */\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.vender{\r\n    margin-top: 2rem;\n}\n.modal-dialog{\r\n    box-sizing: border-box;\r\n      height: auto;\n}\n.modal-content{\r\n    height: 100%;\n}\n.modal-body{\r\n    height: 100%; \r\n    width: 100%;\n}\n#modalCamera{\r\n    width: 100%;\n}\n.mostrar{\r\n    display: block !important;\r\n    height: 100%;\r\n    width: 100%;\r\n    opacity: 1 !important;\r\n    position: absolute !important;background-color: #3c29297a;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* apply a natural box layout model to all elements, but allowing components to change */\nhtml {\r\n  box-sizing: border-box;\n}\n*, *:before, *:after {\r\n  box-sizing: inherit;\n}\nlabel{\r\n     width: 32%;\r\n     /* padding-bottom: 0; */\r\n    /* text-align: right; */\r\n    /* padding-right: 2rem; */\n}\ninput, input:before , input:after{\r\n    border: 1px solid #ccc;\r\n    border-radius: .7rem;\r\n    height: 40px;\r\n    width: 65%;\r\n    text-align: center;\n}\np{\r\n    display: inline-block;\r\n    width: 100%;\n}\n.text-center{\r\n    /* display: inline-block;\r\n    width: 100%;     */\r\n    text-align: center\n}\n.content{\r\n    position: relative;\r\n    width: 100%;\r\n    height: 100%;\n}\n.content>h1{\r\n    text-align: center;\n}\n.content-wrapper{\r\n    /* overflow: scroll;\r\n    max-height: 90vh; */\n}\n.mi-contenido{\r\n    height: 100%;\r\n    width: 80%;\r\n    display: flex;\r\n    flex-wrap: wrap;\r\n    flex-direction: row;\r\n    justify-content: center;\r\n    align-items: center;\r\n    margin: 0 auto;\n}\n.col-4{\r\n    width: 33.33333333%\n}\n.col-8{\r\n    width: 66.66666666%;\n}\n.d-flex{\r\n    display: flex;\n}\n.bg-azul{\r\n    background-color: rgba(2, 24, 150, 0.11);\n}\n.right{\r\n    float: right;\n}\n.datos{\r\n    flex-direction: column;\r\n    justify-content: center;\r\n    align-self: center;\n}\n.datos>div{\r\n    margin-bottom: 1rem;\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.datos>.col-sm-6{\r\n    display: inline-block;\n}\n.datos>.col-sm-6>div{\r\n    width: 100%;\r\n    margin-bottom: .3rem;\r\n    /* display: inline-block; */\r\n    /*  */\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.vender{\r\n    margin-top: 2rem;\n}\n.modal-dialog{\r\n    box-sizing: border-box;\r\n      height: auto;\n}\n.modal-content{\r\n    height: 100%;\n}\n.modal-body{\r\n    height: 100%; \r\n    width: 100%;\n}\n#modalCamera{\r\n    width: 100%;\n}\n.mostrar{\r\n    display: block !important;\r\n    height: 100%;\r\n    width: 100%;\r\n    opacity: 1 !important;\r\n    position: absolute !important;background-color: #3c29297a;\n}\r\n", ""]);
 
 // exports
 
@@ -37947,21 +37954,40 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _c("div"),
-          _vm._v(" "),
           _c("div", { staticClass: "dni-resultado" }, [
-            _c("p", [
-              _c("span", {
-                staticClass: "text-info",
-                domProps: { textContent: _vm._s(_vm.condicionDNI) }
-              }),
-              _vm._v(" "),
-              _c("span", { domProps: { textContent: _vm._s(_vm.nombre) } }),
-              _vm._v(" "),
-              _c("span", { domProps: { textContent: _vm._s(_vm.aPaterno) } }),
-              _vm._v(" "),
-              _c("span", { domProps: { textContent: _vm._s(_vm.aMaterno) } })
-            ])
+            _c("p", { staticClass: "col-xs-4" }),
+            _vm._v(" "),
+            _vm.nroDNI.length < 8 ||
+            _vm.nombre == null ||
+            _vm.nombre == undefined
+              ? _c("p", { staticClass: "col-xs-8" }, [
+                  _c("span", {
+                    staticClass: "text-danger text-center",
+                    domProps: { textContent: _vm._s(_vm.condicionDNI) }
+                  })
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.nroDNI.length == 8 &&
+            _vm.nombre != null &&
+            _vm.nombre != undefined
+              ? _c("p", { staticClass: "col-xs-8" }, [
+                  _c("span", {
+                    staticClass: "text-info",
+                    domProps: { textContent: _vm._s(_vm.condicionDNI) }
+                  }),
+                  _vm._v(" "),
+                  _c("span", { domProps: { textContent: _vm._s(_vm.nombre) } }),
+                  _vm._v(" "),
+                  _c("span", {
+                    domProps: { textContent: _vm._s(_vm.aPaterno) }
+                  }),
+                  _vm._v(" "),
+                  _c("span", {
+                    domProps: { textContent: _vm._s(_vm.aMaterno) }
+                  })
+                ])
+              : _vm._e()
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "cantidad" }, [
@@ -38028,7 +38054,12 @@ var render = function() {
                 }
               ],
               staticClass: "onlyNum",
-              attrs: { type: "number", pattern: "[0-9]{9}" },
+              attrs: {
+                id: "telefono",
+                onKeyUp: "",
+                type: "number",
+                pattern: "[0-9] {9}"
+              },
               domProps: { value: _vm.telefono },
               on: {
                 input: function($event) {
@@ -38067,7 +38098,7 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "box-body table-responsive" }, [
             _c("table", { staticClass: "table table-bordered table-striped" }, [
-              _c("tbody", [
+              _c("thead", [
                 _c("tr", [
                   _c(
                     "th",
@@ -38146,76 +38177,84 @@ var render = function() {
                     ],
                     1
                   )
-                ]),
-                _vm._v(" "),
-                _c("tr", [
-                  _c(
-                    "td",
-                    [
-                      _c(
-                        "font",
-                        { staticStyle: { "vertical-align": "inherit" } },
-                        [
-                          _c(
-                            "font",
-                            { staticStyle: { "vertical-align": "inherit" } },
-                            [_vm._v("1.")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "td",
-                    [
-                      _c(
-                        "font",
-                        { staticStyle: { "vertical-align": "inherit" } },
-                        [
-                          _c(
-                            "font",
-                            { staticStyle: { "vertical-align": "inherit" } },
-                            [_vm._v("lkmxfhmaoimjaexi;fjaw;omfhocwexmewo;")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Habilitado\n                    ")]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c(
-                        "span",
-                        { staticClass: "badge bg-red" },
-                        [
-                          _c(
-                            "font",
-                            { staticStyle: { "vertical-align": "inherit" } },
-                            [
-                              _c(
-                                "font",
-                                {
-                                  staticStyle: { "vertical-align": "inherit" }
-                                },
-                                [_c("i", { staticClass: "fa fa-trash" })]
-                              )
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      )
+                ])
+              ]),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.codigoQR, function(cupon, i) {
+                  return _c("tr", { key: cupon.id }, [
+                    _c(
+                      "td",
+                      [
+                        _c(
+                          "font",
+                          { staticStyle: { "vertical-align": "inherit" } },
+                          [
+                            _c(
+                              "font",
+                              {
+                                staticStyle: { "vertical-align": "inherit" },
+                                domProps: { textContent: _vm._s(i + 1) }
+                              },
+                              [_vm._v(".")]
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      [
+                        _c(
+                          "font",
+                          { staticStyle: { "vertical-align": "inherit" } },
+                          [
+                            _c("font", {
+                              staticStyle: { "vertical-align": "inherit" },
+                              domProps: { textContent: _vm._s(cupon) }
+                            })
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c("td", [_vm._v("Habilitado\n                        ")]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c("a", { attrs: { href: "#" } }, [
+                        _c(
+                          "span",
+                          { staticClass: "badge bg-red" },
+                          [
+                            _c(
+                              "font",
+                              { staticStyle: { "vertical-align": "inherit" } },
+                              [
+                                _c(
+                                  "font",
+                                  {
+                                    staticStyle: { "vertical-align": "inherit" }
+                                  },
+                                  [_c("i", { staticClass: "fa fa-trash" })]
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ])
                     ])
                   ])
-                ])
-              ])
+                }),
+                0
+              )
             ])
           ]),
           _vm._v(" "),

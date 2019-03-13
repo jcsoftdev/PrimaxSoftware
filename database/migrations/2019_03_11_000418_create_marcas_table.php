@@ -19,6 +19,8 @@ class CreateMarcasTable extends Migration
             $table->double('precio',3);
             // $table->timestamps();
         });
+        DB::table('marcas')->insert(array('nombre'=>'PrimaxGas','precio'=> 34.3));
+        DB::table('marcas')->insert(array('nombre'=>'BaratitoGas','precio'=> 27.5));
     }
 
     /**

@@ -21,19 +21,23 @@
                         <input v-model="nroDNI" :maxlength="8" v-on:keyup="buscarDNI()" id="dni" class="onlyNum"  placeholder="Ingrese DNI">
                         
                     </div>
-                    <div>
-
-                    </div>
+                    
                     <div class="dni-resultado">
 
-                            
-                            <p>
+                            <p class="col-xs-4">
+
+                            </p >
+                            <p class="col-xs-8" v-if="nroDNI.length < 8 || nombre == null || nombre == undefined">
+                                <span v-text="condicionDNI" class="text-danger text-center"></span>
+                            </p>
+                            <p class="col-xs-8" v-if="nroDNI.length == 8 &&  nombre != null && nombre != undefined">
                                 <span v-text="condicionDNI" class="text-info"></span>
                                 <span v-text="nombre"></span>
                                 <span v-text="aPaterno"></span>
                                 <span v-text="aMaterno"></span>
                                 
                             </p>
+                            
                     </div>
                     <div class="cantidad">
                         <label class="" for="cantidad" >Cantidad de balones</label>
@@ -46,7 +50,7 @@
                     </div>
                     <div class="telefono">
                         <label class="" for="numero">Numero Celular</label>
-                        <input v-model="telefono" type="number" class="onlyNum" pattern="[0-9]{9}" >
+                        <input id="telefono" v-model="telefono" onKeyUp="" type="number" class="onlyNum" pattern="[0-9] {9}" >
                     </div>
                 </form>
                 
@@ -58,19 +62,22 @@
                     <!-- /.box-header -->
                     <div class="box-body table-responsive">
                     <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 10px"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Numero cupon</font></font></th>
+                                <th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Codigo cupon</font></font></th>
+                                <th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Habilitado</font></font></th>
+                                <th style="width: 40px"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Quitar</font></font></th>
+                            </tr>
+                        </thead>
                         <tbody>
-                        <tr>
-                        <th style="width: 10px"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Numero cupon</font></font></th>
-                        <th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Codigo cupon</font></font></th>
-                        <th><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Habilitado</font></font></th>
-                        <th style="width: 40px"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Quitar</font></font></th>
-                        </tr>
-                        <tr>
-                        <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">1.</font></font></td>
-                        <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">lkmxfhmaoimjaexi;fjaw;omfhocwexmewo;</font></font></td>
-                        <td>Habilitado
-                        </td>
-                        <td><a href="#"><span class="badge bg-red"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><i class="fa fa-trash"></i></font></font></span></a></td>
+                        
+                        <tr v-for="(cupon, i) in codigoQR" :key="cupon.id">
+                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;" v-text="i+1">.</font></font></td>
+                            <td><font style="vertical-align: inherit;"><font style="vertical-align: inherit;" v-text="cupon"></font></font></td>
+                            <td>Habilitado
+                            </td>
+                            <td><a href="#"><span class="badge bg-red"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><i class="fa fa-trash"></i></font></font></span></a></td>
                         </tr>
                         
                     </tbody></table>
@@ -173,11 +180,12 @@ import TecactusApi from 'reniec-sunat-js';
                         return false;
                     }
                 });
+                ;
             },
 
             buscarDNI(){
                 
-                    
+                    this.condicionDNI = 'Este DNI no puede entrar al canjeo'
                     if (this.nroDNI.length == 8) {
                         axios.post('/buscarDNI', {
                         'dni' : this.nroDNI
@@ -187,16 +195,18 @@ import TecactusApi from 'reniec-sunat-js';
                             me.nombre= response.data.nombres;
                             me.aPaterno= response.data.apellidoPaterno;
                             me.aMaterno= response.data.apellidoMaterno;
-                            if (me.aPaterno.length > 0) {
+                            if (me.nombre != undefined) {
+                                if (me.aPaterno.length > 0 && me.nroDNI.length == 8) {
                                 me.condicionDNI = 'DNI Validado'
                                 
-                            }else{
-                                me.condicionDNI = 'Este DNI no puede entrar al canjeo'
+                                }
                             }
+                            
+                            
                             
                         })
                         .catch(e => {
-                            console.log(error);
+                            console.log(e);
                         });
                     }
                     
@@ -233,27 +243,27 @@ import TecactusApi from 'reniec-sunat-js';
                 let me = this;
                  me.scanner.stop();
             },
-            abrirModal(modelo, accion , data=[]){
-                switch (modelo) {
-                    case "ventaX":
-                    {
-                        switch (accion) {
-                            case 'escanear':
-                            {   
-                                this.modal = 1;
-                                this.tituloModal = 'Escanee el codigo QR'
-                                break
-                            } 
-                            case 'vender':
-                            {
+            abrirModal(){
+                // switch (modelo) {
+                //     case "ventaX":
+                //     {
+                //         switch (accion) {
+                //             case 'escanear':
+                //             {   
+                //                 this.modal = 1;
+                //                 this.tituloModal = 'Escanee el codigo QR'
+                //                 break
+                //             } 
+                //             case 'vender':
+                //             {
                                 
-                            }    
+                //             }    
                         
-                        }
+                //         }
                         
-                    }    
+                //     }    
                         
-                }
+                // }
                 this.scanearQR();
             }
         },
@@ -286,6 +296,15 @@ input, input:before , input:after{
     height: 40px;
     width: 65%;
     text-align: center;
+}
+p{
+    display: inline-block;
+    width: 100%;    
+}
+.text-center{
+    /* display: inline-block;
+    width: 100%;     */
+    text-align: center
 }
 .content{
     position: relative;
