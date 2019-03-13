@@ -19,7 +19,7 @@ mix.styles([
    'resources/assets/css/AdminLTE.css',
    'resources/assets/css/_all-skins.min.css',
 ], 'public/css/plantilla.css')
-   .scripts([
+   .scripts([  
       'resources/assets/js/jquery.min.js',
       'resources/assets/js/bootstrap.min.js',
       'resources/assets/js/jquery.slimscroll.min.js',

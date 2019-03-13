@@ -12,6 +12,7 @@
 
   <link rel="stylesheet" href="css/plantilla.css">
   <script type="text/javascript" src="js/instascan.min.js"></script>
+  <script type="text/javascript" src="js/toastr.js"></script>
   <!-- Última versión compilada y minificada -->
   {{-- <script src="https://tecactus-4b42.kxcdn.com/reniec-sunat-js.min.js"></script> --}}
   <!-- Bootstrap 3.3.7 -->

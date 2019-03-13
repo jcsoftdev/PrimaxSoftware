@@ -2,9 +2,9 @@
     <div class="contenido-general ">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-          <h1>
-            Ventas Marca X
-            <small>Realice una venta de gas X</small>
+          <h1 >
+            <span v-text="marca"></span>
+            <small v-text="'Realice una venta de '+ marca"></small>
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -46,7 +46,7 @@
                     </div>
                     <div class="cupon">
                         <label class="" for="cupon">Utiliza cupon?</label>
-                        <input type="button" @click="abrirModal" class="btn btn-success " value="Escanear el codigo QR" data-toggle="modal" data-target="#myModal">
+                        <input type="button" @click="abrirModal()" class="btn btn-success " value="Escanear el codigo QR" data-toggle="modal" data-target="#myModal">
                     </div>
                     <div class="telefono">
                         <label class="" for="numero">Numero Celular</label>
@@ -99,27 +99,36 @@
                     <div class="col-sm-6">
                         <div class="precio">
                             <label class="col-xs-6" for="precio">Precio</label>
-                            <input  class="col-xs-6"  type="text" name="precio" id="precio">
+                            <input v-model="precio" class="col-xs-6"  type="text" name="precio" id="precio">
                         </div>
                         
                         <div class="descuento">
                             <label class="col-xs-6" for="descuento">Descuento </label>
-                            <input class="col-xs-6" type="text" name="descuento" id="descuento">
+                            <input v-model="descuento" class="col-xs-6" type="text" name="descuento" id="descuento">
                         </div>
 
                         <div class="total">
                             <label class="col-xs-6" for="total">Total a pagar</label>
-                            <input class="col-xs-6" type="text" name="total" id="total">
+                            <input v-model="precioTotal" class="col-xs-6" type="text" name="total" id="total">
                         </div>
                         <div></div>
                         <div class="vender">
-                            <input type="button" class="btn btn-info" value="Validar venta">
+                            <input  @click="registrarVenta()" type="button" class="btn btn-info" value="Validar venta">
                         </div>
                         
                     </div>
                     
                 </form>
-                
+                <div class="toast" data-autohide="false">
+                    <div class="toast-header">
+                        <strong class="mr-auto text-primary">Toast Header</strong>
+                        <small class="text-muted">5 mins ago</small>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+                    </div>
+                    <div class="toast-body">
+                        Some text inside the toast body
+                    </div>
+                </div>
                 <!-- Modal -->
                 <div id="myModal" class="modal fade" role="dialog">
                     <div class="modal-dialog">
@@ -127,20 +136,19 @@
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button @click="stopScanner" type="button" class="close" data-dismiss="modal">&times;</button>
+                                <button type="button" @click="stopScanner" class="right btn btn-danger btn-sm " data-toggle="modal" data-target="#myModal">Cerrar &times;</button>
+                                
+                                <!-- <button @click="stopScanner" type="button" class="close" data-dismiss="modal">&times;</button> -->
                                 <h4 class="modal-title">Escanee el codigo QR</h4>
                             </div>
-                            <div class="modal-body">
-                                <video id="modalCamera">
-
-                                </video>
-                                <button type="button" @click="stopScanner" class="btn btn-danger btn-lg right" data-toggle="modal" data-target="#myModal">Cerrar</button>
-
+                            <div class="modal-body d-flex center">
                                 
-
-                                <div class="clearfix"></div>
+                                <video id="modalCamera" class="center ">
+                                    
+                                </video>
+                                
                             </div>
-
+                            
                         </div>
 
                     </div>
@@ -154,7 +162,14 @@
 </template>
 
 <script>
-import TecactusApi from 'reniec-sunat-js';
+    import Toasted from 'vue-toasted';
+
+   
+
+    // you can also pass options, check options reference below
+    Vue.use(Toasted)
+    // you can call like this in your component
+    
     export default {
         data() {
             return{
@@ -167,13 +182,24 @@ import TecactusApi from 'reniec-sunat-js';
                 aMaterno:'',
                 cantidad: '',
                 telefono: '',
-                tituloModal: ''
+                tituloModal: '',
+                marca: '',
+                precioMarca:0,
+                precio: 0,
+                descuento:0,
+                precioTotal:0,
+                idpersona: '',
+                idmarca: '',
+                idusuario: '',
+                hora_fecha: '',
+                localizacion: '',
+                cantidad: '',
+                total: '',
             }
         },
         methods:{
 
-            onlyNum()
-            {
+            onlyNum(){
                 $(".onlyNum").keydown(function(event){
                     //alert(event.keyCode);
                     if((event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105) && event.keyCode !==190  && event.keyCode !==110 && event.keyCode !==8 && event.keyCode !==9  ){
@@ -182,38 +208,32 @@ import TecactusApi from 'reniec-sunat-js';
                 });
                 ;
             },
-
             buscarDNI(){
                 
-                    this.condicionDNI = 'Este DNI no puede entrar al canjeo'
-                    if (this.nroDNI.length == 8) {
-                        axios.post('/buscarDNI', {
-                        'dni' : this.nroDNI
-                        }).then(response => {
-                        // JSON responses are automatically parsed.
-                            let me = this;
-                            me.nombre= response.data.nombres;
-                            me.aPaterno= response.data.apellidoPaterno;
-                            me.aMaterno= response.data.apellidoMaterno;
-                            if (me.nombre != undefined) {
-                                if (me.aPaterno.length > 0 && me.nroDNI.length == 8) {
-                                me.condicionDNI = 'DNI Validado'
-                                
-                                }
+                this.condicionDNI = 'Este DNI no puede entrar al canjeo'
+                if (this.nroDNI.length == 8) {
+                    axios.post('/buscarDNI', {
+                    'dni' : this.nroDNI
+                    }).then(response => {
+                    // JSON responses are automatically parsed.
+                        let me = this;
+                        me.nombre= response.data.nombres;
+                        me.aPaterno= response.data.apellidoPaterno;
+                        me.aMaterno= response.data.apellidoMaterno;
+                        if (me.nombre != undefined) {
+                            if (me.aPaterno.length > 0 && me.nroDNI.length == 8) {
+                            me.condicionDNI = 'DNI Validado'
+                            
                             }
-                            
-                            
-                            
-                        })
-                        .catch(e => {
-                            console.log(e);
-                        });
-                    }
-                    
-                
-                
-
-
+                        }
+                        
+                        
+                        
+                    })
+                    .catch(e => {
+                        console.log(e);
+                    });
+                }
             },
             scanearQR(){
                 let me = this;
@@ -222,7 +242,32 @@ import TecactusApi from 'reniec-sunat-js';
                     
                     if (me.codigoQR.indexOf(content) == -1) {
                         me.codigoQR.push(content);
+                        me.apareceAlerta('success','Escaneado');
+                        // toastr["success"]('Codigo escaneado'+ content);
+                        // this.$root.$refs.toastr.e("ERRROR MESSAGE");
+                        // Make a success toastr
+                         //mensaje
+                        // this.$toastr('success', 'i am a toastr success', 'hello');
+                        // toastr.options = {
+                        //     "closeButton": true,
+                        //     "debug": false,
+                        //     "newestOnTop": false,
+                        //     "progressBar": false,
+                        //     "positionClass": "toast-top-right",
+                        //     "preventDuplicates": false,
+                        //     "onclick": null,
+                        //     "showDuration": "300",
+                        //     "hideDuration": "1000",
+                        //     "timeOut": "5000",
+                        //     "extendedTimeOut": "1000",
+                        //     "showEasing": "swing",
+                        //     "hideEasing": "linear",
+                        //     "showMethod": "fadeIn",
+                        //     "hideMethod": "fadeOut"
+                        // }
                         console.log(content);
+                    }else{
+                        me.apareceAlerta('error', 'Codigo Ya existe o no valido');
                     }
                     
                     
@@ -239,37 +284,139 @@ import TecactusApi from 'reniec-sunat-js';
                 });   
                 
             },
+            apareceAlerta($alert, $mensaje){
+                if ($alert == 'success') {
+                    this.$toasted.success($mensaje,{ 
+                    theme: "bubble", 
+                    position: "top-center", 
+                    duration : 2000,
+                    }).goAway(1500);
+                }
+                if ($alert == 'error') {
+                    this.$toasted.error($mensaje,{ 
+                    theme: "bubble", 
+                    position: "top-center", 
+                    duration : 2000,
+                    }).goAway(1500);
+                }
+            },
             stopScanner(){
                 let me = this;
                  me.scanner.stop();
             },
             abrirModal(){
-                // switch (modelo) {
-                //     case "ventaX":
-                //     {
-                //         switch (accion) {
-                //             case 'escanear':
-                //             {   
-                //                 this.modal = 1;
-                //                 this.tituloModal = 'Escanee el codigo QR'
-                //                 break
-                //             } 
-                //             case 'vender':
-                //             {
-                                
-                //             }    
-                        
-                //         }
-                        
-                //     }    
-                        
-                // }
+                
                 this.scanearQR();
+            },
+            listarMarca(){
+                let me = this;
+                var url = '/marca';
+                axios.get ( url ).then( function (response){
+                    var respuesta = response.data;
+                    // console.log(respuesta);
+                    console.log(respuesta[0].nombre);
+                    // console.log(respuesta.nombre);
+                    me.marca = (respuesta[0].nombre);
+                    me.precioMarca = respuesta[0].precio;
+                    
+                }) 
+                .catch (function (error){
+                    console.log(error);
+                });
+            },
+            validarCliente(){
+                var dni = this.nroDNI;
+                var cont = 0;
+                this.idpersona= '';
+                this.idmarca= '';
+                this.idusuario= '';
+                this.hora_fecha= '';
+                this.localizacion= '';
+                this.cantidad= '';
+                this.total= '';
+                axios.get('/persona')
+                .then(function (response) { 
+                    let respuesta = response.data;
+                    
+                    console.log('validando');
+                    for (let i = 0; i < respuesta.length; i++) {
+                        if (respuesta[i].dni == dni) {
+                            cont = cont + 1;
+                            console.log(respuesta[i]);
+                            return cont;
+                        }
+                        
+                    }
+                    console.log(cont);
+                    
+                    
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+                return cont;
+                    
+                
+            },
+            registrarCliente(){
+                
+                axios.post('/persona/registrar', {
+                'nombre' : this.nombre,
+                'apellidos' : this.aPaterno + ' ' + this.aMaterno,
+                'dni' : this.nroDNI,
+                'email': '',
+                'telefono' : this.telefono,
+
+
+                })
+                .then(function (response) {
+                    console.log(response);
+                  })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+            registrarVenta(){
+                if (this.nombre != undefined && this.validarCliente()==0) {
+                    this.registrarCliente();
+                } else{
+                    // console.log('usuario existente');
+                }
+                axios.post('/venta/registrar', {
+                    'idpersona': 1,
+                    'idmarca': 1,
+                    'idusuario': 1,
+                    'localizacion': 'tasdfghjklokijuhygtfrd',
+                    'cantidad': 7,
+                    'total': 23.3,
+                })
+                .then(function (response) {
+                console.log(response);
+                })
+                .catch(function (error) {
+                console.log(error);
+                });
+
+            },
+            registrarVentaCupon(){
+                
             }
         },
         mounted(){
+            
+            cerrarScanner=>{
+                
+                if (document.getElementById("myModal").style.display =="none") {
+                    stopScanner();
+                }
+            };
+            this.listarMarca();
             this.onlyNum();
             this.buscarDNI();
+            
+            // this.validarCliente();
             // this.abrirModal();
         },
         
@@ -328,6 +475,11 @@ p{
     align-items: center;
     margin: 0 auto;
 }
+.center{
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+}
 .col-4{
     width: 33.33333333%
 }
@@ -369,10 +521,21 @@ p{
 .vender{
     margin-top: 2rem;
 }
-
+#myModal{
+    padding: 0 !important;
+    margin: 0 ;
+    padding: 0;
+    margin-left: 0;
+    min-height: 100vh;
+    min-width: 100vw;
+    overflow: hidden;
+    /* position: absolute; */
+}
 .modal-dialog{
+    margin: 0 !important;
     box-sizing: border-box;
-      height: auto; 
+    width: 100%;
+      height: 100%; 
 }
 .modal-content{
     height: 100%;
@@ -380,9 +543,12 @@ p{
 .modal-body{
     height: 100%; 
     width: 100%;
+    /* overflow: scroll ; */
+    
 }
 #modalCamera{
     width: 100%;
+    max-width: 500px;
 }
 .mostrar{
     display: block !important;
@@ -390,6 +556,23 @@ p{
     width: 100%;
     opacity: 1 !important;
     position: absolute !important;background-color: #3c29297a;
+}
+@media (min-width: 930px) {
+    .modal-body{
+        height: 80% !important; 
+        width: 100vw !important;
+        overflow-x: hidden;
+        /* margin: 10px; */
+        /* overflow: scroll ; */
+    }
+    #modalCamera{
+        height: 100% !important;
+        min-width: 100vw;
+        overflow: hidden;
+    }
+    #myModal{
+        padding: 0 !important;
+    }
 }
 </style>
 

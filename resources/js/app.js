@@ -9,6 +9,7 @@ require('./bootstrap');
 // require('./instascan.min');
 
 window.Vue = require('vue');
+window.toastr = require('toastr');
 
 /**
  * The following block of code may be used to automatically register your
@@ -28,7 +29,7 @@ Vue.component('venta-x-component', require('./components/VentaXComponent.vue').d
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
+Vue.use(Toasted);
 const app = new Vue({
     el: '#app',
     data: {

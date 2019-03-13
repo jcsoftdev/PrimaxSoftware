@@ -37,7 +37,7 @@ class CuponController extends Controller
      */
     public function store(Request $request)
     {
-        $this->InsertCantCupon(50, 3);
+        $this->InsertCantCupon(500, 5);
     }
 
     /**

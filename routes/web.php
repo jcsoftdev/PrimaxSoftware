@@ -14,10 +14,22 @@
 Route::get('/', function () {
     return view('contenido/contenido');
 });
+// Cupones
 Route::get('/cupon', 'CuponController@index');
-Route::post('/crear', 'CuponController@store');
+Route::get('/crear', 'CuponController@store');
 
-Route::post('/buscarDNI', 'PersonaController@buscarPersona');
+
 Route::get('/login', function () {
     return view('login');
 });
+// Marca
+Route::get('/marca', 'MarcaController@index');
+// Persona
+Route::post('/buscarDNI', 'PersonaController@buscarPersona');
+Route::get('/persona','PersonaController@index');
+Route::post('/persona/registrar', 'PersonaController@store');
+// Rol
+// User
+// Venta
+Route::post('/venta/registrar','VentaController@store');
+// VentaCupon

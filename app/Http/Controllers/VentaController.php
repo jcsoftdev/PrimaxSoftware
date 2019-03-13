@@ -1,13 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
-
-use Peru\Jne\Dni;
-use Peru\Http\ContextClient;
-use App\Models\Persona;
-
-class PersonaController extends Controller
+use App\Models\Venta;
+use Carbon\Carbon;
+class VentaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +14,7 @@ class PersonaController extends Controller
      */
     public function index()
     {
-        $personas= Persona::all();
-        return $personas;
+        //
     }
 
     /**
@@ -38,13 +35,16 @@ class PersonaController extends Controller
      */
     public function store(Request $request)
     {
-        $persona = new Persona();
-        $persona->nombre = $request->nombre;
-        $persona->apellidos = $request->apellidos;
-        $persona->dni = $request->dni;
-        $persona->email = $request->email;
-        $persona->telefono=$request->telefono;
-        $persona->save();
+        $venta = new Venta();
+        $venta->idpersona = $request->idpersona;
+        $venta->idmarca = $request->idmarca;
+        $venta->idusuario = $request->idusuario;
+        $venta->hora_fecha = Carbon::now('America/Lima');
+        $venta->localizacion=$request->localizacion;
+        $venta->cantidad=$request->cantidad;
+        $venta->total=$request->total;
+        echo $venta;
+        $venta->save();
     }
 
     /**
@@ -90,23 +90,5 @@ class PersonaController extends Controller
     public function destroy($id)
     {
         //
-    }
-    public function buscarPersona(Request $request){
-        // require 'vendor/autoload.php';
-        $dni = $request->dni;
-        $cs = new Dni();
-        $cs->setClient(new ContextClient());
-
-        $person = $cs->get($dni);
-        if ($person === false) {
-            echo $cs->getError();
-            exit();
-        }
-
-        return json_encode($person);
-    }
-    public function buscarDNI(){
-        $persona = DB::table('personas')->select('dni')->get();
-        return $persona;
     }
 }
