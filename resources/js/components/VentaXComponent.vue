@@ -14,11 +14,11 @@
          <!-- Main content -->
          <div class="mi-contenido container-fluid">
              <section class="content">
-                <form class="datos d-flex">
+                <form class="datos d-flex" >
                     <div class="dni">
                         <label class="" for="dni">DNI</label>
                         <!-- <input type="text" name="DNI" id="dni" pattern="[0-9]{9}" placeholder="Ingrese el Nro de DNI"> -->
-                        <input v-model="nroDNI" :maxlength="8" v-on:keyup="buscarDNI()" id="dni" class="onlyNum"  placeholder="Ingrese DNI">
+                        <input v-model="nroDNI"  :maxlength="8" v-on:keyup="buscarDNI();" id="dni" class="onlyNum"  placeholder="Ingrese DNI" >
                         
                     </div>
                     
@@ -39,14 +39,15 @@
                             </p>
                             
                     </div>
-                    <div class="cantidad">
+
+                    <div class="cantidad onlyNum">
                         <label class="" for="cantidad" >Cantidad de balones</label>
-                        <input v-model="cantidad" type="number" class="onlyNum" placeholder="Cantidad de balones" value="1">
+                        <input v-model="cantidad" id="cantidad" v-on:keyup="calcularTotal()" type="text" class="onlyNum" placeholder="Cantidad de balones" value="">
                         
                     </div>
                     <div class="cupon">
                         <label class="" for="cupon">Utiliza cupon?</label>
-                        <input type="button" @click="abrirModal()" class="btn btn-success " value="Escanear el codigo QR" data-toggle="modal" data-target="#myModal">
+                        <input type="button" @click="abrirModal()" class="btn btn-success " value="Escanear el codigo QR" data-toggle="modal" data-target="#myModal" id="cupon">
                     </div>
                     <div class="telefono">
                         <label class="" for="numero">Numero Celular</label>
@@ -99,7 +100,7 @@
                     <div class="col-sm-6">
                         <div class="precio">
                             <label class="col-xs-6" for="precio">Precio</label>
-                            <input v-model="precio" class="col-xs-6"  type="text" name="precio" id="precio">
+                            <input v-model="precioMarca" class="col-xs-6"  type="text" name="precio" id="precio">
                         </div>
                         
                         <div class="descuento">
@@ -113,22 +114,12 @@
                         </div>
                         <div></div>
                         <div class="vender">
-                            <input  @click="registrarVenta()" type="button" class="btn btn-info" value="Validar venta">
+                            <input  @click="registrarVenta()" type="button" class="btn btn-info" value="Validar venta" id="vender">
                         </div>
                         
                     </div>
                     
                 </form>
-                <div class="toast" data-autohide="false">
-                    <div class="toast-header">
-                        <strong class="mr-auto text-primary">Toast Header</strong>
-                        <small class="text-muted">5 mins ago</small>
-                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
-                    </div>
-                    <div class="toast-body">
-                        Some text inside the toast body
-                    </div>
-                </div>
                 <!-- Modal -->
                 <div id="myModal" class="modal fade" role="dialog">
                     <div class="modal-dialog">
@@ -167,7 +158,9 @@
    
 
     // you can also pass options, check options reference below
-    Vue.use(Toasted)
+    Vue.use(Toasted);
+    // import VeeValidate from 'vee-validate';
+    // Vue.use(VeeValidate);
     // you can call like this in your component
     
     export default {
@@ -185,20 +178,23 @@
                 tituloModal: '',
                 marca: '',
                 precioMarca:0,
-                precio: 0,
                 descuento:0,
                 precioTotal:0,
-                idpersona: '',
                 idmarca: '',
                 idusuario: '',
                 hora_fecha: '',
-                localizacion: '',
-                cantidad: '',
-                total: '',
+                errorLocalizacion: '',
             }
         },
         methods:{
-
+            inicialConf(){
+                document.getElementById("vender").disabled = true;
+                document.getElementById("precio").disabled = true;
+                document.getElementById("descuento").disabled = true;
+                document.getElementById("total").disabled = true;
+                document.getElementById("cantidad").disabled = true;
+                document.getElementById("cupon").disabled = true;
+            },
             onlyNum(){
                 $(".onlyNum").keydown(function(event){
                     //alert(event.keyCode);
@@ -217,14 +213,22 @@
                     }).then(response => {
                     // JSON responses are automatically parsed.
                         let me = this;
+                        
                         me.nombre= response.data.nombres;
                         me.aPaterno= response.data.apellidoPaterno;
                         me.aMaterno= response.data.apellidoMaterno;
                         if (me.nombre != undefined) {
                             if (me.aPaterno.length > 0 && me.nroDNI.length == 8) {
                             me.condicionDNI = 'DNI Validado'
-                            
+                            document.getElementById("cantidad").disabled = false;
+                            document.getElementById("cupon").disabled = false;
+                            }else{
+                                document.getElementById("cantidad").disabled = true;
+                                document.getElementById("cupon").disabled = true;
                             }
+                        }else{
+                            document.getElementById("cantidad").disabled = true;
+                            document.getElementById("cupon").disabled = true;
                         }
                         
                         
@@ -233,6 +237,9 @@
                     .catch(e => {
                         console.log(e);
                     });
+                }else{
+                    document.getElementById("cantidad").disabled = true;
+                    document.getElementById("cupon").disabled = true;
                 }
             },
             scanearQR(){
@@ -243,28 +250,6 @@
                     if (me.codigoQR.indexOf(content) == -1) {
                         me.codigoQR.push(content);
                         me.apareceAlerta('success','Escaneado');
-                        // toastr["success"]('Codigo escaneado'+ content);
-                        // this.$root.$refs.toastr.e("ERRROR MESSAGE");
-                        // Make a success toastr
-                         //mensaje
-                        // this.$toastr('success', 'i am a toastr success', 'hello');
-                        // toastr.options = {
-                        //     "closeButton": true,
-                        //     "debug": false,
-                        //     "newestOnTop": false,
-                        //     "progressBar": false,
-                        //     "positionClass": "toast-top-right",
-                        //     "preventDuplicates": false,
-                        //     "onclick": null,
-                        //     "showDuration": "300",
-                        //     "hideDuration": "1000",
-                        //     "timeOut": "5000",
-                        //     "extendedTimeOut": "1000",
-                        //     "showEasing": "swing",
-                        //     "hideEasing": "linear",
-                        //     "showMethod": "fadeIn",
-                        //     "hideMethod": "fadeOut"
-                        // }
                         console.log(content);
                     }else{
                         me.apareceAlerta('error', 'Codigo Ya existe o no valido');
@@ -308,7 +293,7 @@
                 
                 this.scanearQR();
             },
-            listarMarca(){
+            getMarca(){
                 let me = this;
                 var url = '/marca';
                 axios.get ( url ).then( function (response){
@@ -323,23 +308,64 @@
                 .catch (function (error){
                     console.log(error);
                 });
+                
+            },
+            getPersonaId($dni){
+                 var busqueda = '';
+                busqueda = $dni;
+                let me = this;
+                var url = "/persona/"+busqueda;
+                var id = '';
+                if (busqueda.length == 8) {
+                    axios.get ( url ).then( function (response){
+                        var respuesta = response.data;
+                        id = respuesta[0].id;
+                        console.log(id);
+                        
+                        
+                    }) 
+                    .catch (function (error){
+                        console.log(error);
+                    });
+                } else {
+                    
+                }
+                return id;
+            },
+            calcularTotal(){
+                var me = this;
+                // console.log(me.getPersonaId('71887664'));
+                // if (me.getPersonaId(me.nroDNI)) {
+                    // if (me.nroDNI.length == 8 && me.nombre != null) {
+                        if (parseFloat(this.cantidad)>0) {
+                        me.precioTotal = parseFloat(me.precioMarca) * parseFloat(me.cantidad);
+                        console.log(me.precioTotal);
+                        
+                        document.getElementById("vender").disabled = false;
+                        }
+                        else{
+                            document.getElementById("vender").disabled = true;
+                        }
+                    // }
+                    // else{
+                    //     document.getElementById("vender").disabled = true;
+                    // }
+                // } else {
+                    
+                // }
+                
+                
             },
             validarCliente(){
                 var dni = this.nroDNI;
                 var cont = 0;
-                this.idpersona= '';
-                this.idmarca= '';
-                this.idusuario= '';
-                this.hora_fecha= '';
-                this.localizacion= '';
-                this.cantidad= '';
-                this.total= '';
+                
                 axios.get('/persona')
                 .then(function (response) { 
                     let respuesta = response.data;
-                    
                     console.log('validando');
                     for (let i = 0; i < respuesta.length; i++) {
+                       
                         if (respuesta[i].dni == dni) {
                             cont = cont + 1;
                             console.log(respuesta[i]);
@@ -347,7 +373,7 @@
                         }
                         
                     }
-                    console.log(cont);
+                    // console.log(cont);
                     
                     
                 })
@@ -355,7 +381,7 @@
                     // handle error
                     console.log(error);
                 });
-                return cont;
+                
                     
                 
             },
@@ -378,19 +404,40 @@
                 });
                 
             },
+            obtenerLocalizacion(){
+                if (!navigator.geolocation) {
+                    this.errorLocalizacion = "Geolocalizacion no es soportada en tu navegador";
+                }   
+                function success(position) {
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+
+                    return  'Latitud: ' + latitude + '° Longitud: ' + longitude + '°';
+                };
+
+                function error() {
+                    this.errorLocalizacion = "No se puede obtener acceso a tu localización";
+                };
+            },
             registrarVenta(){
-                if (this.nombre != undefined && this.validarCliente()==0) {
-                    this.registrarCliente();
+                var me = this;
+                
+                if (me.nombre != undefined && me.getPersonaId(me.nroDNI) == null) {
+                    me.registrarCliente();  
                 } else{
-                    // console.log('usuario existente');
+                    console.log(typeof(me.getPersonaId(me.nroDNI)));
+                    console.log('DNI: '+me.nroDNI+' ID: '+me.getPersonaId(me.nroDNI));
                 }
+                var idpersona= me.getPersonaId(me.nroDNI);
+                me.idusuario= '';
+                
                 axios.post('/venta/registrar', {
-                    'idpersona': 1,
-                    'idmarca': 1,
+                    'idpersona': idpersona,
+                    'idmarca': me.marca,
                     'idusuario': 1,
-                    'localizacion': 'tasdfghjklokijuhygtfrd',
-                    'cantidad': 7,
-                    'total': 23.3,
+                    'localizacion': this.obtenerLocalizacion(),
+                    'cantidad': me.cantidad,
+                    'total': me.precioTotal,
                 })
                 .then(function (response) {
                 console.log(response);
@@ -406,16 +453,12 @@
         },
         mounted(){
             
-            cerrarScanner=>{
-                
-                if (document.getElementById("myModal").style.display =="none") {
-                    stopScanner();
-                }
-            };
-            this.listarMarca();
+            
+            this.inicialConf();
+            this.getMarca();
             this.onlyNum();
             this.buscarDNI();
-            
+            console.log(this.getPersonaId('71887664'));;
             // this.validarCliente();
             // this.abrirModal();
         },
@@ -556,6 +599,9 @@ p{
     width: 100%;
     opacity: 1 !important;
     position: absolute !important;background-color: #3c29297a;
+}
+.precio .descuento .total{
+    
 }
 @media (min-width: 930px) {
     .modal-body{

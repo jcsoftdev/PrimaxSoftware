@@ -28,8 +28,12 @@ Route::get('/marca', 'MarcaController@index');
 Route::post('/buscarDNI', 'PersonaController@buscarPersona');
 Route::get('/persona','PersonaController@index');
 Route::post('/persona/registrar', 'PersonaController@store');
+Route::get('/persona/{dni}', 'PersonaController@buscarPersonaPorDNI');
 // Rol
 // User
 // Venta
 Route::post('/venta/registrar','VentaController@store');
 // VentaCupon
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

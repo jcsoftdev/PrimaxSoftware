@@ -18,6 +18,7 @@ mix.styles([
    'resources/assets/css/ionicons.min.css',
    'resources/assets/css/AdminLTE.css',
    'resources/assets/css/_all-skins.min.css',
+   'resources/assets/css/blue.css',
 ], 'public/css/plantilla.css')
    .scripts([  
       'resources/assets/js/jquery.min.js',
@@ -25,5 +26,6 @@ mix.styles([
       'resources/assets/js/jquery.slimscroll.min.js',
       'resources/assets/js/fastclick.js',
       'resources/assets/js/adminlte.min.js',
+      'resources/assets/js/icheck.js',
    ], 'public/js/plantilla.js')
    .js(['resources/js/app.js'], 'public/js/app.js');

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Venta;
-use Carbon\Carbon;
-class VentaController extends Controller
+
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,17 +34,7 @@ class VentaController extends Controller
      */
     public function store(Request $request)
     {
-        $venta = new Venta();
-        $venta->idpersona = $request->idpersona;
-        $venta->idmarca = $request->idmarca;
-        // $venta->idusuario = \Auth::user()->id;
-        $venta->idusuario = 1;
-        $venta->hora_fecha = Carbon::now('America/Lima');
-        $venta->localizacion=$request->localizacion;
-        $venta->cantidad=$request->cantidad;
-        $venta->total=$request->total;
-        echo $venta;
-        $venta->save();
+        //
     }
 
     /**

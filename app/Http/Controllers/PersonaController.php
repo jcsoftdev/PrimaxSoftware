@@ -55,7 +55,8 @@ class PersonaController extends Controller
      */
     public function show($id)
     {
-        //
+       $persona = Persona::find($id);
+        return $persona;
     }
 
     /**
@@ -107,6 +108,10 @@ class PersonaController extends Controller
     }
     public function buscarDNI(){
         $persona = DB::table('personas')->select('dni')->get();
+        return $persona;
+    }
+    public function buscarPersonaPorDNI($dni){
+        $persona = Persona::where("personas.dni",'=',"$dni")->get();
         return $persona;
     }
 }

@@ -258,7 +258,6 @@
   </div>
   <!-- ./wrapper -->
 
-  <!-- jQuery 3 -->
   <script src="js/plantilla.js"></script>
   <script src="js/app.js"></script>
   {{-- <script>

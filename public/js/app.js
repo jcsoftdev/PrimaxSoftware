@@ -1765,17 +1765,8 @@ module.exports = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_toasted__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-toasted */ "./node_modules/vue-toasted/dist/vue-toasted.min.js");
 /* harmony import */ var vue_toasted__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_toasted__WEBPACK_IMPORTED_MODULE_0__);
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -1932,13 +1923,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
  // you can also pass options, check options reference below
 
-Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // you can call like this in your component
+Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // import VeeValidate from 'vee-validate';
+// Vue.use(VeeValidate);
+// you can call like this in your component
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    var _ref;
-
-    return _ref = {
+    return {
       scanner: '',
       codigoQR: [],
       nroDNI: '',
@@ -1951,17 +1942,23 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // you can call lik
       tituloModal: '',
       marca: '',
       precioMarca: 0,
-      precio: 0,
       descuento: 0,
       precioTotal: 0,
-      idpersona: '',
       idmarca: '',
       idusuario: '',
       hora_fecha: '',
-      localizacion: ''
-    }, _defineProperty(_ref, "cantidad", ''), _defineProperty(_ref, "total", ''), _ref;
+      errorLocalizacion: ''
+    };
   },
   methods: {
+    inicialConf: function inicialConf() {
+      document.getElementById("vender").disabled = true;
+      document.getElementById("precio").disabled = true;
+      document.getElementById("descuento").disabled = true;
+      document.getElementById("total").disabled = true;
+      document.getElementById("cantidad").disabled = true;
+      document.getElementById("cupon").disabled = true;
+    },
     onlyNum: function onlyNum() {
       $(".onlyNum").keydown(function (event) {
         //alert(event.keyCode);
@@ -1989,11 +1986,22 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // you can call lik
           if (me.nombre != undefined) {
             if (me.aPaterno.length > 0 && me.nroDNI.length == 8) {
               me.condicionDNI = 'DNI Validado';
+              document.getElementById("cantidad").disabled = false;
+              document.getElementById("cupon").disabled = false;
+            } else {
+              document.getElementById("cantidad").disabled = true;
+              document.getElementById("cupon").disabled = true;
             }
+          } else {
+            document.getElementById("cantidad").disabled = true;
+            document.getElementById("cupon").disabled = true;
           }
         }).catch(function (e) {
           console.log(e);
         });
+      } else {
+        document.getElementById("cantidad").disabled = true;
+        document.getElementById("cupon").disabled = true;
       }
     },
     scanearQR: function scanearQR() {
@@ -2004,29 +2012,7 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // you can call lik
       me.scanner.addListener('scan', function (content) {
         if (me.codigoQR.indexOf(content) == -1) {
           me.codigoQR.push(content);
-          me.apareceAlerta('success', 'Escaneado'); // toastr["success"]('Codigo escaneado'+ content);
-          // this.$root.$refs.toastr.e("ERRROR MESSAGE");
-          // Make a success toastr
-          //mensaje
-          // this.$toastr('success', 'i am a toastr success', 'hello');
-          // toastr.options = {
-          //     "closeButton": true,
-          //     "debug": false,
-          //     "newestOnTop": false,
-          //     "progressBar": false,
-          //     "positionClass": "toast-top-right",
-          //     "preventDuplicates": false,
-          //     "onclick": null,
-          //     "showDuration": "300",
-          //     "hideDuration": "1000",
-          //     "timeOut": "5000",
-          //     "extendedTimeOut": "1000",
-          //     "showEasing": "swing",
-          //     "hideEasing": "linear",
-          //     "showMethod": "fadeIn",
-          //     "hideMethod": "fadeOut"
-          // }
-
+          me.apareceAlerta('success', 'Escaneado');
           console.log(content);
         } else {
           me.apareceAlerta('error', 'Codigo Ya existe o no valido');
@@ -2067,7 +2053,7 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // you can call lik
     abrirModal: function abrirModal() {
       this.scanearQR();
     },
-    listarMarca: function listarMarca() {
+    getMarca: function getMarca() {
       var me = this;
       var url = '/marca';
       axios.get(url).then(function (response) {
@@ -2081,16 +2067,47 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // you can call lik
         console.log(error);
       });
     },
+    getPersonaId: function getPersonaId($dni) {
+      var busqueda = '';
+      busqueda = $dni;
+      var me = this;
+      var url = "/persona/" + busqueda;
+      var id = '';
+
+      if (busqueda.length == 8) {
+        axios.get(url).then(function (response) {
+          var respuesta = response.data;
+          id = respuesta[0].id;
+          console.log(id);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      } else {}
+
+      return id;
+    },
+    calcularTotal: function calcularTotal() {
+      var me = this; // console.log(me.getPersonaId('71887664'));
+      // if (me.getPersonaId(me.nroDNI)) {
+      // if (me.nroDNI.length == 8 && me.nombre != null) {
+
+      if (parseFloat(this.cantidad) > 0) {
+        me.precioTotal = parseFloat(me.precioMarca) * parseFloat(me.cantidad);
+        console.log(me.precioTotal);
+        document.getElementById("vender").disabled = false;
+      } else {
+        document.getElementById("vender").disabled = true;
+      } // }
+      // else{
+      //     document.getElementById("vender").disabled = true;
+      // }
+      // } else {
+      // }
+
+    },
     validarCliente: function validarCliente() {
       var dni = this.nroDNI;
       var cont = 0;
-      this.idpersona = '';
-      this.idmarca = '';
-      this.idusuario = '';
-      this.hora_fecha = '';
-      this.localizacion = '';
-      this.cantidad = '';
-      this.total = '';
       axios.get('/persona').then(function (response) {
         var respuesta = response.data;
         console.log('validando');
@@ -2101,14 +2118,12 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // you can call lik
             console.log(respuesta[i]);
             return cont;
           }
-        }
+        } // console.log(cont);
 
-        console.log(cont);
       }).catch(function (error) {
         // handle error
         console.log(error);
       });
-      return cont;
     },
     registrarCliente: function registrarCliente() {
       axios.post('/persona/registrar', {
@@ -2123,19 +2138,44 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // you can call lik
         console.log(error);
       });
     },
-    registrarVenta: function registrarVenta() {
-      if (this.nombre != undefined && this.validarCliente() == 0) {
-        this.registrarCliente();
-      } else {// console.log('usuario existente');
+    obtenerLocalizacion: function obtenerLocalizacion() {
+      if (!navigator.geolocation) {
+        this.errorLocalizacion = "Geolocalizacion no es soportada en tu navegador";
       }
 
+      function success(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        return 'Latitud: ' + latitude + '° Longitud: ' + longitude + '°';
+      }
+
+      ;
+
+      function error() {
+        this.errorLocalizacion = "No se puede obtener acceso a tu localización";
+      }
+
+      ;
+    },
+    registrarVenta: function registrarVenta() {
+      var me = this;
+
+      if (me.nombre != undefined && me.getPersonaId(me.nroDNI) == null) {
+        me.registrarCliente();
+      } else {
+        console.log(_typeof(me.getPersonaId(me.nroDNI)));
+        console.log('DNI: ' + me.nroDNI + ' ID: ' + me.getPersonaId(me.nroDNI));
+      }
+
+      var idpersona = me.getPersonaId(me.nroDNI);
+      me.idusuario = '';
       axios.post('/venta/registrar', {
-        'idpersona': 1,
-        'idmarca': 1,
+        'idpersona': idpersona,
+        'idmarca': me.marca,
         'idusuario': 1,
-        'localizacion': 'tasdfghjklokijuhygtfrd',
-        'cantidad': 7,
-        'total': 23.3
+        'localizacion': this.obtenerLocalizacion(),
+        'cantidad': me.cantidad,
+        'total': me.precioTotal
       }).then(function (response) {
         console.log(response);
       }).catch(function (error) {
@@ -2145,15 +2185,12 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // you can call lik
     registrarVentaCupon: function registrarVentaCupon() {}
   },
   mounted: function mounted() {
-    (function (cerrarScanner) {
-      if (document.getElementById("myModal").style.display == "none") {
-        stopScanner();
-      }
-    });
-
-    this.listarMarca();
+    this.inicialConf();
+    this.getMarca();
     this.onlyNum();
-    this.buscarDNI(); // this.validarCliente();
+    this.buscarDNI();
+    console.log(this.getPersonaId('71887664'));
+    ; // this.validarCliente();
     // this.abrirModal();
   }
 });
@@ -6617,7 +6654,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* apply a natural box layout model to all elements, but allowing components to change */\nhtml {\r\n  box-sizing: border-box;\n}\n*, *:before, *:after {\r\n  box-sizing: inherit;\n}\nlabel{\r\n     width: 32%;\r\n     /* padding-bottom: 0; */\r\n    /* text-align: right; */\r\n    /* padding-right: 2rem; */\n}\ninput, input:before , input:after{\r\n    border: 1px solid #ccc;\r\n    border-radius: .7rem;\r\n    height: 40px;\r\n    width: 65%;\r\n    text-align: center;\n}\np{\r\n    display: inline-block;\r\n    width: 100%;\n}\n.text-center{\r\n    /* display: inline-block;\r\n    width: 100%;     */\r\n    text-align: center\n}\n.content{\r\n    position: relative;\r\n    width: 100%;\r\n    height: 100%;\n}\n.content>h1{\r\n    text-align: center;\n}\n.content-wrapper{\r\n    /* overflow: scroll;\r\n    max-height: 90vh; */\n}\n.mi-contenido{\r\n    height: 100%;\r\n    width: 80%;\r\n    display: flex;\r\n    flex-wrap: wrap;\r\n    flex-direction: row;\r\n    justify-content: center;\r\n    align-items: center;\r\n    margin: 0 auto;\n}\n.center{\r\n    flex-direction: column;\r\n    flex-wrap: nowrap;\r\n    align-items: center;\n}\n.col-4{\r\n    width: 33.33333333%\n}\n.col-8{\r\n    width: 66.66666666%;\n}\n.d-flex{\r\n    display: flex;\n}\n.bg-azul{\r\n    background-color: rgba(2, 24, 150, 0.11);\n}\n.right{\r\n    float: right;\n}\n.datos{\r\n    flex-direction: column;\r\n    justify-content: center;\r\n    align-self: center;\n}\n.datos>div{\r\n    margin-bottom: 1rem;\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.datos>.col-sm-6{\r\n    display: inline-block;\n}\n.datos>.col-sm-6>div{\r\n    width: 100%;\r\n    margin-bottom: .3rem;\r\n    /* display: inline-block; */\r\n    /*  */\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.vender{\r\n    margin-top: 2rem;\n}\n#myModal{\r\n    padding: 0 !important;\r\n    margin: 0 ;\r\n    padding: 0;\r\n    margin-left: 0;\r\n    min-height: 100vh;\r\n    min-width: 100vw;\r\n    overflow: hidden;\r\n    /* position: absolute; */\n}\n.modal-dialog{\r\n    margin: 0 !important;\r\n    box-sizing: border-box;\r\n    width: 100%;\r\n      height: 100%;\n}\n.modal-content{\r\n    height: 100%;\n}\n.modal-body{\r\n    height: 100%; \r\n    width: 100%;\r\n    /* overflow: scroll ; */\n}\n#modalCamera{\r\n    width: 100%;\r\n    max-width: 500px;\n}\n.mostrar{\r\n    display: block !important;\r\n    height: 100%;\r\n    width: 100%;\r\n    opacity: 1 !important;\r\n    position: absolute !important;background-color: #3c29297a;\n}\n@media (min-width: 930px) {\n.modal-body{\r\n        height: 80% !important; \r\n        width: 100vw !important;\r\n        overflow-x: hidden;\r\n        /* margin: 10px; */\r\n        /* overflow: scroll ; */\n}\n#modalCamera{\r\n        height: 100% !important;\r\n        min-width: 100vw;\r\n        overflow: hidden;\n}\n#myModal{\r\n        padding: 0 !important;\n}\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* apply a natural box layout model to all elements, but allowing components to change */\nhtml {\r\n  box-sizing: border-box;\n}\n*, *:before, *:after {\r\n  box-sizing: inherit;\n}\nlabel{\r\n     width: 32%;\r\n     /* padding-bottom: 0; */\r\n    /* text-align: right; */\r\n    /* padding-right: 2rem; */\n}\ninput, input:before , input:after{\r\n    border: 1px solid #ccc;\r\n    border-radius: .7rem;\r\n    height: 40px;\r\n    width: 65%;\r\n    text-align: center;\n}\np{\r\n    display: inline-block;\r\n    width: 100%;\n}\n.text-center{\r\n    /* display: inline-block;\r\n    width: 100%;     */\r\n    text-align: center\n}\n.content{\r\n    position: relative;\r\n    width: 100%;\r\n    height: 100%;\n}\n.content>h1{\r\n    text-align: center;\n}\n.content-wrapper{\r\n    /* overflow: scroll;\r\n    max-height: 90vh; */\n}\n.mi-contenido{\r\n    height: 100%;\r\n    width: 80%;\r\n    display: flex;\r\n    flex-wrap: wrap;\r\n    flex-direction: row;\r\n    justify-content: center;\r\n    align-items: center;\r\n    margin: 0 auto;\n}\n.center{\r\n    flex-direction: column;\r\n    flex-wrap: nowrap;\r\n    align-items: center;\n}\n.col-4{\r\n    width: 33.33333333%\n}\n.col-8{\r\n    width: 66.66666666%;\n}\n.d-flex{\r\n    display: flex;\n}\n.bg-azul{\r\n    background-color: rgba(2, 24, 150, 0.11);\n}\n.right{\r\n    float: right;\n}\n.datos{\r\n    flex-direction: column;\r\n    justify-content: center;\r\n    align-self: center;\n}\n.datos>div{\r\n    margin-bottom: 1rem;\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.datos>.col-sm-6{\r\n    display: inline-block;\n}\n.datos>.col-sm-6>div{\r\n    width: 100%;\r\n    margin-bottom: .3rem;\r\n    /* display: inline-block; */\r\n    /*  */\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.vender{\r\n    margin-top: 2rem;\n}\n#myModal{\r\n    padding: 0 !important;\r\n    margin: 0 ;\r\n    padding: 0;\r\n    margin-left: 0;\r\n    min-height: 100vh;\r\n    min-width: 100vw;\r\n    overflow: hidden;\r\n    /* position: absolute; */\n}\n.modal-dialog{\r\n    margin: 0 !important;\r\n    box-sizing: border-box;\r\n    width: 100%;\r\n      height: 100%;\n}\n.modal-content{\r\n    height: 100%;\n}\n.modal-body{\r\n    height: 100%; \r\n    width: 100%;\r\n    /* overflow: scroll ; */\n}\n#modalCamera{\r\n    width: 100%;\r\n    max-width: 500px;\n}\n.mostrar{\r\n    display: block !important;\r\n    height: 100%;\r\n    width: 100%;\r\n    opacity: 1 !important;\r\n    position: absolute !important;background-color: #3c29297a;\n}\n.precio .descuento .total{\n}\n@media (min-width: 930px) {\n.modal-body{\r\n        height: 80% !important; \r\n        width: 100vw !important;\r\n        overflow-x: hidden;\r\n        /* margin: 10px; */\r\n        /* overflow: scroll ; */\n}\n#modalCamera{\r\n        height: 100% !important;\r\n        min-width: 100vw;\r\n        overflow: hidden;\n}\n#myModal{\r\n        padding: 0 !important;\n}\n}\r\n", ""]);
 
 // exports
 
@@ -38410,7 +38447,7 @@ var render = function() {
               : _vm._e()
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "cantidad" }, [
+          _c("div", { staticClass: "cantidad onlyNum" }, [
             _c("label", { attrs: { for: "cantidad" } }, [
               _vm._v("Cantidad de balones")
             ]),
@@ -38426,12 +38463,16 @@ var render = function() {
               ],
               staticClass: "onlyNum",
               attrs: {
-                type: "number",
+                id: "cantidad",
+                type: "text",
                 placeholder: "Cantidad de balones",
-                value: "1"
+                value: ""
               },
               domProps: { value: _vm.cantidad },
               on: {
+                keyup: function($event) {
+                  return _vm.calcularTotal()
+                },
                 input: function($event) {
                   if ($event.target.composing) {
                     return
@@ -38453,7 +38494,8 @@ var render = function() {
                 type: "button",
                 value: "Escanear el codigo QR",
                 "data-toggle": "modal",
-                "data-target": "#myModal"
+                "data-target": "#myModal",
+                id: "cupon"
               },
               on: {
                 click: function($event) {
@@ -38820,19 +38862,19 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.precio,
-                      expression: "precio"
+                      value: _vm.precioMarca,
+                      expression: "precioMarca"
                     }
                   ],
                   staticClass: "col-xs-6",
                   attrs: { type: "text", name: "precio", id: "precio" },
-                  domProps: { value: _vm.precio },
+                  domProps: { value: _vm.precioMarca },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.precio = $event.target.value
+                      _vm.precioMarca = $event.target.value
                     }
                   }
                 })
@@ -38903,7 +38945,11 @@ var render = function() {
               _c("div", { staticClass: "vender" }, [
                 _c("input", {
                   staticClass: "btn btn-info",
-                  attrs: { type: "button", value: "Validar venta" },
+                  attrs: {
+                    type: "button",
+                    value: "Validar venta",
+                    id: "vender"
+                  },
                   on: {
                     click: function($event) {
                       return _vm.registrarVenta()
@@ -38914,8 +38960,6 @@ var render = function() {
             ])
           ]
         ),
-        _vm._v(" "),
-        _vm._m(1),
         _vm._v(" "),
         _c(
           "div",
@@ -38946,7 +38990,7 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _vm._m(2)
+                _vm._m(1)
               ])
             ])
           ]
@@ -38970,39 +39014,6 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("li", { staticClass: "active" }, [_vm._v("Ventas")])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "toast", attrs: { "data-autohide": "false" } },
-      [
-        _c("div", { staticClass: "toast-header" }, [
-          _c("strong", { staticClass: "mr-auto text-primary" }, [
-            _vm._v("Toast Header")
-          ]),
-          _vm._v(" "),
-          _c("small", { staticClass: "text-muted" }, [_vm._v("5 mins ago")]),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "ml-2 mb-1 close",
-              attrs: { type: "button", "data-dismiss": "toast" }
-            },
-            [_vm._v("×")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "toast-body" }, [
-          _vm._v(
-            "\n                    Some text inside the toast body\n                "
-          )
-        ])
-      ]
-    )
   },
   function() {
     var _vm = this
