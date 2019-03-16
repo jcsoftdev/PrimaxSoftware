@@ -36,15 +36,15 @@ class VentaController extends Controller
     public function store(Request $request)
     {
         $venta = new Venta();
-        $venta->idpersona = $request->idpersona;
-        $venta->idmarca = $request->idmarca;
+        $venta->idpersona    = $request->idpersona;
+        $venta->idmarca      = $request->idmarca;
         // $venta->idusuario = \Auth::user()->id;
-        $venta->idusuario = 1;
-        $venta->hora_fecha = Carbon::now('America/Lima');
-        $venta->localizacion=$request->localizacion;
-        $venta->cantidad=$request->cantidad;
-        $venta->total=$request->total;
-        echo $venta;
+        $venta->idusuario    = $request->idusuario;
+        $venta->hora_fecha   = Carbon::now('America/Lima');
+        $venta->localizacion = $request->localizacion;
+        $venta->cantidad     = $request->cantidad;
+        $venta->total        = $request->total;
+        // echo $venta;
         $venta->save();
     }
 

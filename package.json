@@ -25,10 +25,9 @@
         "vue-template-compiler": "^2.6.8"
     },
     "dependencies": {
-        "@deveodk/vue-toastr": "^1.0.4",
-        "fs": "0.0.1-security",
         "instascan": "^1.0.0",
         "reniec-sunat-js": "^1.0.0",
+        "sweetalert2": "^8.5.0",
         "vee-validate": "^2.2.0",
         "vue-qrcode-reader": "^1.4.0",
         "vue-toasted": "^1.1.26"

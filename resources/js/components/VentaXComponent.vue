@@ -14,46 +14,76 @@
          <!-- Main content -->
          <div class="mi-contenido container-fluid">
              <section class="content">
-                <form class="datos d-flex" >
-                    <div class="dni">
-                        <label class="" for="dni">DNI</label>
-                        <!-- <input type="text" name="DNI" id="dni" pattern="[0-9]{9}" placeholder="Ingrese el Nro de DNI"> -->
-                        <input v-model="nroDNI"  :maxlength="8" v-on:keyup="buscarDNI();" id="dni" class="onlyNum"  placeholder="Ingrese DNI" >
+                <form action="">
+                    <div class="datos d-flex" >
+                        <div class="dni">
+                            <label class="" for="dni">DNI</label>
+                            <!-- <input type="text" name="DNI" id="dni" pattern="[0-9]{9}" placeholder="Ingrese el Nro de DNI"> -->
+                            <input v-model="nroDNI"  :maxlength="8" v-on:keyup="buscarDNI(); getPersonaId(nroDNI)" id="dni" class="onlyNum"  placeholder="Ingrese DNI" >
+                            
+                        </div>
                         
+                        <div class="dni-resultado">
+
+                                <p class="col-xs-4">
+
+                                </p >
+                                <p class="col-xs-8" v-if="nroDNI.length < 8 || nombre == null || nombre == undefined">
+                                    <span v-text="condicionDNI" class="text-danger text-center"></span>
+                                </p>
+                                <p class="col-xs-8" v-if="nroDNI.length == 8 &&  nombre != null && nombre != undefined">
+                                    <span v-text="condicionDNI" class="text-info"></span>
+                                    <span v-text="nombre"></span>
+                                    <span v-text="aPaterno"></span>
+                                    <span v-text="aMaterno"></span>
+                                    
+                                </p>
+                                
+                        </div>
+
+                        <div class="cantidad onlyNum">
+                            <label class="" for="cantidad" >Cantidad de balones</label>
+                            <input v-model="cantidad" id="cantidad" v-on:keyup="calcularTotal()" type="text" class="onlyNum" placeholder="Cantidad de balones" value="">
+                            
+                        </div>
+                        <div class="cupon">
+                            <label class="" for="cupon">Utiliza cupon?</label>
+                            <input type="button" @click="abrirModal()" class="btn btn-success " value="Escanear el codigo QR" data-toggle="modal" data-target="#myModal" id="cupon">
+                        </div>
+                        <div class="telefono">
+                            <label class="" for="numero">Numero Celular</label>
+                            <input id="telefono" v-model="telefono" onKeyUp="" type="number" class="onlyNum" pattern="[0-9] {9}" >
+                        </div>
                     </div>
                     
-                    <div class="dni-resultado">
+                    
 
-                            <p class="col-xs-4">
-
-                            </p >
-                            <p class="col-xs-8" v-if="nroDNI.length < 8 || nombre == null || nombre == undefined">
-                                <span v-text="condicionDNI" class="text-danger text-center"></span>
-                            </p>
-                            <p class="col-xs-8" v-if="nroDNI.length == 8 &&  nombre != null && nombre != undefined">
-                                <span v-text="condicionDNI" class="text-info"></span>
-                                <span v-text="nombre"></span>
-                                <span v-text="aPaterno"></span>
-                                <span v-text="aMaterno"></span>
-                                
-                            </p>
+                    <div  class="datos d-flex flex-r" >
+                        <div class="col-sm-6"></div>
+                        <div class="col-sm-6">
+                            <div class="precio">
+                                <label class="col-xs-6" for="precio">Precio</label>
+                                <input v-model="precioMarca" class="col-xs-6"  type="text" name="precio" id="precio">
+                            </div>
                             
-                    </div>
+                            <div class="descuento">
+                                <label class="col-xs-6" for="descuento">Descuento </label>
+                                <input v-model="descuento" class="col-xs-6" type="text" name="descuento" id="descuento">
+                            </div>
 
-                    <div class="cantidad onlyNum">
-                        <label class="" for="cantidad" >Cantidad de balones</label>
-                        <input v-model="cantidad" id="cantidad" v-on:keyup="calcularTotal()" type="text" class="onlyNum" placeholder="Cantidad de balones" value="">
-                        
-                    </div>
-                    <div class="cupon">
-                        <label class="" for="cupon">Utiliza cupon?</label>
-                        <input type="button" @click="abrirModal()" class="btn btn-success " value="Escanear el codigo QR" data-toggle="modal" data-target="#myModal" id="cupon">
-                    </div>
-                    <div class="telefono">
-                        <label class="" for="numero">Numero Celular</label>
-                        <input id="telefono" v-model="telefono" onKeyUp="" type="number" class="onlyNum" pattern="[0-9] {9}" >
+                            <div class="total">
+                                <label class="col-xs-6" for="total">Total a pagar</label>
+                                <input v-model="precioTotal" class="col-xs-6" type="text" name="total" id="total">
+                            </div>
+                            <div></div>
+                            <div class="vender">
+                                <input  @click="realizarRegistroVenta()" type="button" class="btn btn-info" value="Validar venta" id="vender">
+                            </div>
+                            
+                        </div>
                     </div>
                 </form>
+                    
                 
                 <!-- tabla de informacion de cupones -->
                 <div class="box">
@@ -94,32 +124,7 @@
                     </ul>
                     </div>
                 </div>
-
-                <form action="" class="datos" method="post">
-                    <div class="col-sm-6"></div>
-                    <div class="col-sm-6">
-                        <div class="precio">
-                            <label class="col-xs-6" for="precio">Precio</label>
-                            <input v-model="precioMarca" class="col-xs-6"  type="text" name="precio" id="precio">
-                        </div>
-                        
-                        <div class="descuento">
-                            <label class="col-xs-6" for="descuento">Descuento </label>
-                            <input v-model="descuento" class="col-xs-6" type="text" name="descuento" id="descuento">
-                        </div>
-
-                        <div class="total">
-                            <label class="col-xs-6" for="total">Total a pagar</label>
-                            <input v-model="precioTotal" class="col-xs-6" type="text" name="total" id="total">
-                        </div>
-                        <div></div>
-                        <div class="vender">
-                            <input  @click="registrarVenta()" type="button" class="btn btn-info" value="Validar venta" id="vender">
-                        </div>
-                        
-                    </div>
-                    
-                </form>
+                
                 <!-- Modal -->
                 <div id="myModal" class="modal fade" role="dialog">
                     <div class="modal-dialog">
@@ -154,6 +159,7 @@
 
 <script>
     import Toasted from 'vue-toasted';
+import { async } from 'q';
 
    
 
@@ -181,9 +187,9 @@
                 descuento:0,
                 precioTotal:0,
                 idmarca: '',
-                idusuario: '',
+                idpersona: 0,
                 hora_fecha: '',
-                errorLocalizacion: '',
+                respuestaLocalizacion: '',
             }
         },
         methods:{
@@ -198,7 +204,7 @@
             onlyNum(){
                 $(".onlyNum").keydown(function(event){
                     //alert(event.keyCode);
-                    if((event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105) && event.keyCode !==190  && event.keyCode !==110 && event.keyCode !==8 && event.keyCode !==9  ){
+                    if((event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105) && event.keyCode ==190  && event.keyCode ==110 && event.keyCode !==8 && event.keyCode !==9  ){
                         return false;
                     }
                 });
@@ -208,6 +214,7 @@
                 
                 this.condicionDNI = 'Este DNI no puede entrar al canjeo'
                 if (this.nroDNI.length == 8) {
+                    console.log('dni lenght == 8');
                     axios.post('/buscarDNI', {
                     'dni' : this.nroDNI
                     }).then(response => {
@@ -218,17 +225,19 @@
                         me.aPaterno= response.data.apellidoPaterno;
                         me.aMaterno= response.data.apellidoMaterno;
                         if (me.nombre != undefined) {
-                            if (me.aPaterno.length > 0 && me.nroDNI.length == 8) {
-                            me.condicionDNI = 'DNI Validado'
-                            document.getElementById("cantidad").disabled = false;
-                            document.getElementById("cupon").disabled = false;
+                            if (me.nombre.length > 0 && me.nroDNI.length == 8) {
+                                me.condicionDNI = 'DNI Validado'
+                                document.getElementById("cantidad").disabled = false;
+                                document.getElementById("cupon").disabled = false;
                             }else{
                                 document.getElementById("cantidad").disabled = true;
                                 document.getElementById("cupon").disabled = true;
+                                document.getElementById("vender").disabled = true;
                             }
                         }else{
                             document.getElementById("cantidad").disabled = true;
                             document.getElementById("cupon").disabled = true;
+                            document.getElementById("vender").disabled = true;
                         }
                         
                         
@@ -238,8 +247,15 @@
                         console.log(e);
                     });
                 }else{
+                    this.nombre = undefined;
+                    this.aPaterno = undefined;
+                    this.aMaterno = undefined;
+                    this.idpersona = 0;
+                    this.cantidad = '';
+                    console.log('length dni =! 8');
                     document.getElementById("cantidad").disabled = true;
                     document.getElementById("cupon").disabled = true;
+                    document.getElementById("vender").disabled = true;
                 }
             },
             scanearQR(){
@@ -299,8 +315,9 @@
                 axios.get ( url ).then( function (response){
                     var respuesta = response.data;
                     // console.log(respuesta);
-                    console.log(respuesta[0].nombre);
+                    // console.log(respuesta[0].nombre);
                     // console.log(respuesta.nombre);
+                    me.idmarca = respuesta[0].id;
                     me.marca = (respuesta[0].nombre);
                     me.precioMarca = respuesta[0].precio;
                     
@@ -310,19 +327,27 @@
                 });
                 
             },
-            getPersonaId($dni){
-                 var busqueda = '';
-                busqueda = $dni;
+            getPersonaId(dni){
+                console.log('obteniendo id de persona');
                 let me = this;
-                var url = "/persona/"+busqueda;
-                var id = '';
-                if (busqueda.length == 8) {
-                    axios.get ( url ).then( function (response){
-                        var respuesta = response.data;
-                        id = respuesta[0].id;
-                        console.log(id);
+                var url = "/persona/"+dni;
+                
+                if (dni.length == 8) {
+                  axios.get ( url ).then( function (response){
+                        // console.log(url);
                         
+                        // var respuesta = response.data;
+                        // id = respuesta[0].id;
+                        // console.log('id ' + id);
+                        // console.log(response.data[0]);
                         
+                        if (response.data[0] != undefined) {
+                            me.idpersona = response.data[0].id;
+                            console.log('ID persona '+me.idpersona);
+                        }else{
+                            console.info('error: No existe Usuario en la base de datos');
+                        }
+                         
                     }) 
                     .catch (function (error){
                         console.log(error);
@@ -330,7 +355,6 @@
                 } else {
                     
                 }
-                return id;
             },
             calcularTotal(){
                 var me = this;
@@ -386,7 +410,7 @@
                 
             },
             registrarCliente(){
-                
+console.log('registrando cliente');
                 axios.post('/persona/registrar', {
                 'nombre' : this.nombre,
                 'apellidos' : this.aPaterno + ' ' + this.aMaterno,
@@ -400,42 +424,106 @@
                     console.log(response);
                   })
                 .catch(function (error) {
-                    console.log(error);
+                    console.log('error de registro de cliente');
                 });
-                
             },
             obtenerLocalizacion(){
-                if (!navigator.geolocation) {
-                    this.errorLocalizacion = "Geolocalizacion no es soportada en tu navegador";
-                }   
-                function success(position) {
-                    var latitude = position.coords.latitude;
-                    var longitude = position.coords.longitude;
+                var me = this;
+                (function(){
+                    if (navigator.geolocation)
+                    {
+                        navigator.geolocation.getCurrentPosition(function(objPosition)
+                        {
+                            var lon = objPosition.coords.longitude;
+                            var lat = objPosition.coords.latitude;
 
-                    return  'Latitud: ' + latitude + '° Longitud: ' + longitude + '°';
-                };
+                            me.respuestaLocalizacion = "Latitud:" + lat + " Longitud:" + lon + "";
 
-                function error() {
-                    this.errorLocalizacion = "No se puede obtener acceso a tu localización";
-                };
+                        }, function(objPositionError)
+                        {
+                            switch (objPositionError.code)
+                            {
+                                case objPositionError.PERMISSION_DENIED:
+                                    me.respuestaLocalizacion = "No se ha permitido el acceso a la posición del usuario.";
+                                break;
+                                case objPositionError.POSITION_UNAVAILABLE:
+                                    me.respuestaLocalizacion = "No se ha podido acceder a la información de su posición.";
+                                break;
+                                case objPositionError.TIMEOUT:
+                                    me.respuestaLocalizacion = "El servicio ha tardado demasiado tiempo en responder.";
+                                break;
+                                default:
+                                    me.respuestaLocalizacion = "Error desconocido.";
+                            }
+                        }, {
+                            maximumAge: 75000,
+                            timeout: 15000
+                        });
+                        console.log('object');
+                    }
+                    else
+                    {
+                        me.respuestaLocalizacion = "Su navegador no soporta la API de geolocalización.";
+                    }
+                })();
+                
+                
+            },
+            realizarRegistroVenta(){
+                var me = this;
+                if (me.idpersona==0) {
+                    
+                    function res(){
+                        if (me.idpersona==0) {
+                            function f1() {
+                                Vue.nextTick(me.registrarCliente());
+                            }
+                            function f2() {
+                                Vue.nextTick(
+                                    
+                                )
+                                    ;
+                                // return 'registrado'
+                                
+                            }
+                            function f3() {
+                                Vue.nextTick(
+                                    me.registrarVenta()
+                                )
+                                   ;
+                                
+                            }
+                            f1();
+                            setTimeout(function () {
+                                me.getPersonaId(me.nroDNI)
+                            },100);
+                            setTimeout(function () {
+                                me.registrarVenta()
+                            }, 500);
+                            // setTimeout(f3(), 100000);
+                            // if (f2() == 'registrado') {
+                            //     f3();
+                            // }
+                        } else {
+                            (function () {
+                                me.registrarVenta();
+                            })
+                        }
+                    }
+                    res();
+                } else {
+                    me.registrarVenta();
+                }
+                
             },
             registrarVenta(){
+console.log('registrando venta');
                 var me = this;
-                
-                if (me.nombre != undefined && me.getPersonaId(me.nroDNI) == null) {
-                    me.registrarCliente();  
-                } else{
-                    console.log(typeof(me.getPersonaId(me.nroDNI)));
-                    console.log('DNI: '+me.nroDNI+' ID: '+me.getPersonaId(me.nroDNI));
-                }
-                var idpersona= me.getPersonaId(me.nroDNI);
-                me.idusuario= '';
-                
                 axios.post('/venta/registrar', {
-                    'idpersona': idpersona,
-                    'idmarca': me.marca,
+                    'idpersona': me.idpersona,
+                    'idmarca': me.idmarca,
                     'idusuario': 1,
-                    'localizacion': this.obtenerLocalizacion(),
+                    'localizacion': me.respuestaLocalizacion,
                     'cantidad': me.cantidad,
                     'total': me.precioTotal,
                 })
@@ -458,7 +546,9 @@
             this.getMarca();
             this.onlyNum();
             this.buscarDNI();
-            console.log(this.getPersonaId('71887664'));;
+            this.obtenerLocalizacion();
+            // console.log(this.respuestaLocalizacion);
+            // console.log(this.getPersonaId('71887664'));
             // this.validarCliente();
             // this.abrirModal();
         },
@@ -531,6 +621,9 @@ p{
 }
 .d-flex{
     display: flex;
+}
+.flex-r{
+    flex-direction: row !important;
 }
 .bg-azul{
     background-color: rgba(2, 24, 150, 0.11);
