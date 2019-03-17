@@ -71,7 +71,7 @@ class CuponController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
     }
 
     /**
@@ -132,7 +132,21 @@ class CuponController extends Controller
         }
     }
     public function buscarCuponSerial($cupon){
-        $cupon = Cupon::where("cupons.serial",'=',"$cupon")->get();
+        $cupon = Cupon::where("cupons.serial",'=',"$cupon")->where("cupons.condicion",'=','1')->get();
         return $cupon;
     }
+    // public function desactivar(Request $request)
+    // {
+    //     // if (!$request->ajax()) return redirect('/');
+    //     $cupon = Cupon::findOrFail($request->id);
+    //     $cupon->condicion = '0';
+    //     $cupon->save();
+    // }
+    // public function activar(Request $request)
+    // {
+    //     // if (!$request->ajax()) return redirect('/');
+    //     $cupon = Cupon::findOrFail($request->id);
+    //     $cupon->condicion = '1';
+    //     $cupon->save();
+    // }
 }

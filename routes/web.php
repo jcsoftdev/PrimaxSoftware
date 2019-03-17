@@ -18,6 +18,7 @@ Route::get('/', function () {
 Route::get('/cupon', 'CuponController@index');
 Route::get('/cupon/crear', 'CuponController@store');
 Route::get('/cupon/{dni}', 'CuponController@buscarCuponSerial');
+Route::get('/cupon/desactivar', 'CuponController@desactivar');
 // login
 
 // Marca

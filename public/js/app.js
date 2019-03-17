@@ -1919,13 +1919,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
  // you can also pass options, check options reference below
 
@@ -1949,6 +1942,7 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // import VeeValida
       tituloModal: '',
       marca: '',
       precioMarca: 0,
+      precio: 0,
       descuento: 0,
       precioTotal: 0,
       idmarca: '',
@@ -2036,21 +2030,16 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // import VeeValida
 
             if (response.data[0].id > 0) {
               me.idcodigoQR.push(response.data[0].id);
-              me.codigoQR.push(content); // Swal.fire({
-              //     type: 'success',
-              //     title: 'Venta Registrada',
-              //     showConfirmButton: false,
-              //     timer: 2000
-              // })
-
+              me.codigoQR.push(content);
+              me.calcularTotal();
               me.apareceAlerta('success', 'Codigo/Cupon validado', 'Codigo/Cupon agrgado correctamente');
               console.log(content);
             } else {
-              me.apareceAlerta('error', 'No existe Codigo', 'Intente escanear un código válido');
+              me.apareceAlerta('error', 'Código no Validado', 'Intente escanear un código válido');
             }
           }).catch(function (error) {
             // handle error
-            me.apareceAlerta('error', 'No existe Codigo', 'Intente escanear un código válido'); // console.log(error);
+            me.apareceAlerta('error', 'Código no Validado', 'Intente escanear un código válido'); // console.log(error);
           }).then(function () {// always executed
           });
         } else {
@@ -2122,17 +2111,33 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // import VeeValida
         });
       } else {}
     },
+    getDescuento: function getDescuento() {
+      var desc = 0;
+
+      for (var i = 0; i < this.codigoQR.length; i++) {
+        // me.descuento ++;
+        desc++;
+      }
+
+      return desc;
+    },
     calcularTotal: function calcularTotal() {
       var me = this; // console.log(me.getPersonaId('71887664'));
       // if (me.getPersonaId(me.nroDNI)) {
       // if (me.nroDNI.length == 8 && me.nombre != null) {
 
       if (parseFloat(this.cantidad) > 0) {
-        me.precioTotal = parseFloat(me.precioMarca) * parseFloat(me.cantidad);
+        me.precio = parseFloat(me.precioMarca) * parseFloat(me.cantidad);
+        console.log(me.codigoQR.length);
+        me.descuento = me.getDescuento();
+        me.precioTotal = parseFloat(me.precioMarca) * parseFloat(me.cantidad) - this.getDescuento();
         console.log(me.precioTotal);
         document.getElementById("vender").disabled = false;
       } else {
         document.getElementById("vender").disabled = true;
+        me.precio = 0;
+        me.descuento = 0;
+        me.precioTotal = 0;
       } // }
       // else{
       //     document.getElementById("vender").disabled = true;
@@ -2266,12 +2271,21 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // import VeeValida
         'arrayCupon': me.idcodigoQR
       }).then(function (response) {
         if (response = !null) {
+          // for (let i = 0; i < me.codigoQR.length; i++) {
+          //     me.desactivarCupon(i+1);
+          // }
           Swal.fire({
             type: 'success',
             title: 'Venta Registrada',
             showConfirmButton: false,
             timer: 2000
           });
+          me.precio = 0;
+          me.descuento = 0;
+          me.precioTotal = 0;
+          me.nroDNI = '';
+          me.cantidad = '';
+          me.codigoQR = [];
         }
       }).catch(function (error) {
         console.log(error);
@@ -2284,7 +2298,17 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // import VeeValida
         });
       });
     },
-    registrarVentaCupon: function registrarVentaCupon() {}
+    registrarVentaCupon: function registrarVentaCupon() {},
+    desactivarCupon: function desactivarCupon(id) {
+      console.log('entrandfo a desactivar cupon');
+      axios.put('/cupon/desactivar', {
+        id: id
+      }).then(function (response) {
+        console.log(response);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
   },
   mounted: function mounted() {
     this.inicialConf();
@@ -6757,7 +6781,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* apply a natural box layout model to all elements, but allowing components to change */\nhtml {\r\n  box-sizing: border-box;\n}\n*, *:before, *:after {\r\n  box-sizing: inherit;\n}\nlabel{\r\n     width: 32%;\r\n     /* padding-bottom: 0; */\r\n    /* text-align: right; */\r\n    /* padding-right: 2rem; */\n}\ninput, input:before , input:after{\r\n    border: 1px solid #ccc;\r\n    border-radius: .7rem;\r\n    height: 40px;\r\n    width: 65%;\r\n    text-align: center;\n}\np{\r\n    display: inline-block;\r\n    width: 100%;\n}\n.text-center{\r\n    /* display: inline-block;\r\n    width: 100%;     */\r\n    text-align: center\n}\n.content{\r\n    position: relative;\r\n    width: 100%;\r\n    height: 100%;\n}\n.content>h1{\r\n    text-align: center;\n}\n.content-wrapper{\r\n    /* overflow: scroll;\r\n    max-height: 90vh; */\n}\n.mi-contenido{\r\n    height: 100%;\r\n    width: 80%;\r\n    display: flex;\r\n    flex-wrap: wrap;\r\n    flex-direction: row;\r\n    justify-content: center;\r\n    align-items: center;\r\n    margin: 0 auto;\n}\n.center{\r\n    flex-direction: column;\r\n    flex-wrap: nowrap;\r\n    align-items: center;\n}\n.col-4{\r\n    width: 33.33333333%\n}\n.col-8{\r\n    width: 66.66666666%;\n}\n.d-flex{\r\n    display: flex;\n}\n.flex-r{\r\n    flex-direction: row !important;\n}\n.bg-azul{\r\n    background-color: rgba(2, 24, 150, 0.11);\n}\n.right{\r\n    float: right;\n}\n.datos{\r\n    flex-direction: column;\r\n    justify-content: center;\r\n    align-self: center;\n}\n.datos>div{\r\n    margin-bottom: 1rem;\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.datos>.col-sm-6{\r\n    display: inline-block;\n}\n.datos>.col-sm-6>div{\r\n    width: 100%;\r\n    margin-bottom: .3rem;\r\n    /* display: inline-block; */\r\n    /*  */\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.vender{\r\n    margin-top: 2rem;\n}\n#myModal{\r\n    padding: 0 !important;\r\n    margin: 0 ;\r\n    padding: 0;\r\n    margin-left: 0;\r\n    min-height: 100vh;\r\n    min-width: 100vw;\r\n    overflow: hidden;\r\n    /* position: absolute; */\n}\n.modal-dialog{\r\n    margin: 0 !important;\r\n    box-sizing: border-box;\r\n    width: 100%;\r\n      height: 100%;\n}\n.modal-content{\r\n    height: 100%;\n}\n.modal-body{\r\n    height: 100%; \r\n    width: 100%;\r\n    /* overflow: scroll ; */\n}\n#modalCamera{\r\n    width: 100%;\r\n    max-width: 500px;\n}\n.mostrar{\r\n    display: block !important;\r\n    height: 100%;\r\n    width: 100%;\r\n    opacity: 1 !important;\r\n    position: absolute !important;background-color: #3c29297a;\n}\n.precio .descuento .total{\n}\n@media (min-width: 930px) {\n.modal-body{\r\n        height: 80% !important; \r\n        width: 100vw !important;\r\n        overflow-x: hidden;\r\n        /* margin: 10px; */\r\n        /* overflow: scroll ; */\n}\n#modalCamera{\r\n        height: 100% !important;\r\n        min-width: 100vw;\r\n        overflow: hidden;\n}\n#myModal{\r\n        padding: 0 !important;\n}\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* apply a natural box layout model to all elements, but allowing components to change */\nhtml {\r\n  box-sizing: border-box;\n}\n*, *:before, *:after {\r\n  box-sizing: inherit;\n}\nlabel{\r\n     width: 32%;\r\n     /* padding-bottom: 0; */\r\n    /* text-align: right; */\r\n    /* padding-right: 2rem; */\n}\ninput, input:before , input:after{\r\n    border: 1px solid #ccc;\r\n    border-radius: .7rem;\r\n    height: 40px;\r\n    width: 65%;\r\n    text-align: center;\n}\np{\r\n    display: inline-block;\r\n    width: 100%;\n}\n.text-center{\r\n    /* display: inline-block;\r\n    width: 100%;     */\r\n    text-align: center\n}\n.content{\r\n    position: relative;\r\n    width: 100%;\r\n    height: 100%;\n}\n.content>h1{\r\n    text-align: center;\n}\n.content-wrapper{\r\n    /* overflow: scroll;\r\n    max-height: 90vh; */\n}\n.mi-contenido{\r\n    height: 100%;\r\n    width: 80%;\r\n    display: flex;\r\n    flex-wrap: wrap;\r\n    flex-direction: row;\r\n    justify-content: center;\r\n    align-items: center;\r\n    margin: 0 auto;\n}\n.center{\r\n    flex-direction: column;\r\n    flex-wrap: nowrap;\r\n    align-items: center;\n}\n.col-4{\r\n    width: 33.33333333%\n}\n.col-8{\r\n    width: 66.66666666%;\n}\n.d-flex{\r\n    display: flex;\n}\n.flex-r{\r\n    flex-direction: row !important;\n}\n.bg-azul{\r\n    background-color: rgba(2, 24, 150, 0.11);\n}\n.right{\r\n    float: right;\n}\n.datos{\r\n    flex-direction: column;\r\n    justify-content: center;\r\n    align-self: center;\n}\n.datos>div{\r\n    margin-bottom: 1rem;\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.datos>.col-sm-6{\r\n    display: inline-block;\n}\n.datos>.col-sm-6>div{\r\n    width: 100%;\r\n    margin-bottom: .3rem;\r\n    /* display: inline-block; */\r\n    /*  */\r\n    display: flex;\r\n   justify-content: center;\r\n   align-items: center;\n}\n.vender{\r\n    margin-top: 2rem;\n}\n#myModal{\r\n    padding: 0 !important;\r\n    margin: 0 ;\r\n    padding: 0;\r\n    margin-left: 0;\r\n    min-height: 100vh;\r\n    min-width: 100vw;\r\n    overflow: hidden;\r\n    /* position: absolute; */\n}\n.modal-dialog{\r\n    margin: 0 !important;\r\n    box-sizing: border-box;\r\n    width: 100%;\r\n      height: 100%;\n}\n.modal-content{\r\n    height: 100%;\n}\n.modal-body{\r\n    height: 100%; \r\n    width: 100%;\r\n    /* overflow: scroll ; */\n}\n#modalCamera{\r\n    width: 100%;\r\n    max-width: 500px;\n}\n.mostrar{\r\n    display: block !important;\r\n    height: 100%;\r\n    width: 100%;\r\n    opacity: 1 !important;\r\n    position: absolute !important;background-color: #3c29297a;\n}\n.precio .descuento .total{\n}\n@media (min-width: 930px) {\n.modal-body{\r\n        height: 80% !important; \r\n        width: 100vw !important;\r\n        overflow-x: hidden;\r\n        /* margin: 10px; */\r\n        /* overflow: scroll ; */\n}\n#modalCamera{\r\n        height: 100% !important;\r\n        min-width: 100vw;\r\n        overflow: hidden;\n}\n#myModal{\r\n        padding: 0 !important;\n}\n}\r\n", ""]);
 
 // exports
 
@@ -43170,6 +43194,10 @@ var render = function() {
         _vm._v(" "),
         _c("small", {
           domProps: { textContent: _vm._s("Realice una venta de " + _vm.marca) }
+        }),
+        _vm._v(" "),
+        _c("span", {
+          domProps: { textContent: _vm._s("S/ " + _vm.precioMarca) }
         })
       ]),
       _vm._v(" "),
@@ -43323,19 +43351,19 @@ var render = function() {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.precioMarca,
-                      expression: "precioMarca"
+                      value: _vm.precio,
+                      expression: "precio"
                     }
                   ],
                   staticClass: "col-xs-6",
                   attrs: { type: "text", name: "precio", id: "precio" },
-                  domProps: { value: _vm.precioMarca },
+                  domProps: { value: _vm.precio },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.precioMarca = $event.target.value
+                      _vm.precio = $event.target.value
                     }
                   }
                 })
@@ -43605,124 +43633,6 @@ var render = function() {
                 0
               )
             ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "box-footer clearfix" }, [
-            _c(
-              "ul",
-              { staticClass: "pagination pagination-sm no-margin pull-right" },
-              [
-                _c("li", [
-                  _c(
-                    "a",
-                    { attrs: { href: "#" } },
-                    [
-                      _c(
-                        "font",
-                        { staticStyle: { "vertical-align": "inherit" } },
-                        [
-                          _c(
-                            "font",
-                            { staticStyle: { "vertical-align": "inherit" } },
-                            [_vm._v("«")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ]),
-                _vm._v(" "),
-                _c("li", [
-                  _c(
-                    "a",
-                    { attrs: { href: "#" } },
-                    [
-                      _c(
-                        "font",
-                        { staticStyle: { "vertical-align": "inherit" } },
-                        [
-                          _c(
-                            "font",
-                            { staticStyle: { "vertical-align": "inherit" } },
-                            [_vm._v("1")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ]),
-                _vm._v(" "),
-                _c("li", [
-                  _c(
-                    "a",
-                    { attrs: { href: "#" } },
-                    [
-                      _c(
-                        "font",
-                        { staticStyle: { "vertical-align": "inherit" } },
-                        [
-                          _c(
-                            "font",
-                            { staticStyle: { "vertical-align": "inherit" } },
-                            [_vm._v("2")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ]),
-                _vm._v(" "),
-                _c("li", [
-                  _c(
-                    "a",
-                    { attrs: { href: "#" } },
-                    [
-                      _c(
-                        "font",
-                        { staticStyle: { "vertical-align": "inherit" } },
-                        [
-                          _c(
-                            "font",
-                            { staticStyle: { "vertical-align": "inherit" } },
-                            [_vm._v("3")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ]),
-                _vm._v(" "),
-                _c("li", [
-                  _c(
-                    "a",
-                    { attrs: { href: "#" } },
-                    [
-                      _c(
-                        "font",
-                        { staticStyle: { "vertical-align": "inherit" } },
-                        [
-                          _c(
-                            "font",
-                            { staticStyle: { "vertical-align": "inherit" } },
-                            [_vm._v("»")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ])
-              ]
-            )
           ])
         ]),
         _vm._v(" "),
@@ -43745,7 +43655,12 @@ var render = function() {
                         "data-toggle": "modal",
                         "data-target": "#myModal"
                       },
-                      on: { click: _vm.stopScanner }
+                      on: {
+                        click: function($event) {
+                          _vm.stopScanner()
+                          _vm.calcularTotal()
+                        }
+                      }
                     },
                     [_vm._v("Cerrar ×")]
                   ),

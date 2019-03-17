@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Venta;
 use App\Models\VentaCupon;
+use App\Models\Cupon;
 use Carbon\Carbon;
 class VentaController extends Controller
 {
@@ -58,7 +59,12 @@ class VentaController extends Controller
                     $ventaCupon->idcupon = $cup;       
                     $ventaCupon->idventa = $venta->id;
                     $ventaCupon->save();
+
+                    $cupon = Cupon::findOrFail($cup);
+                    $cupon->condicion = '0';
+                    $cupon->save();
                 }
+            
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

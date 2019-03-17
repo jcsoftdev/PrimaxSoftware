@@ -5,6 +5,7 @@
           <h1 >
             <span v-text="marca"></span>
             <small v-text="'Realice una venta de '+ marca"></small>
+            <span v-text="'S/ '+precioMarca"></span>
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -63,7 +64,7 @@
                         <div class="col-sm-6">
                             <div class="precio">
                                 <label class="col-xs-6" for="precio">Precio</label>
-                                <input v-model="precioMarca" class="col-xs-6"  type="text" name="precio" id="precio">
+                                <input v-model="precio" class="col-xs-6"  type="text" name="precio" id="precio">
                             </div>
                             
                             <div class="descuento">
@@ -114,15 +115,7 @@
                     </tbody></table>
                     </div>
                     <!-- /.box-body -->
-                    <div class="box-footer clearfix">
-                    <ul class="pagination pagination-sm no-margin pull-right">
-                        <li><a href="#"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">«</font></font></a></li>
-                        <li><a href="#"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">1</font></font></a></li>
-                        <li><a href="#"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">2</font></font></a></li>
-                        <li><a href="#"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">3</font></font></a></li>
-                        <li><a href="#"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">»</font></font></a></li>
-                    </ul>
-                    </div>
+                    
                 </div>
                 
                 <!-- Modal -->
@@ -132,7 +125,7 @@
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button type="button" @click="stopScanner" class="right btn btn-danger btn-sm " data-toggle="modal" data-target="#myModal">Cerrar &times;</button>
+                                <button type="button" @click="stopScanner();calcularTotal()" class="right btn btn-danger btn-sm " data-toggle="modal" data-target="#myModal">Cerrar &times;</button>
                                 
                                 <!-- <button @click="stopScanner" type="button" class="close" data-dismiss="modal">&times;</button> -->
                                 <h4 class="modal-title">Escanee el codigo QR</h4>
@@ -185,6 +178,7 @@ import { async } from 'q';
                 tituloModal: '',
                 marca: '',
                 precioMarca:0,
+                precio: 0,
                 descuento:0,
                 precioTotal:0,
                 idmarca: '',
@@ -275,21 +269,16 @@ import { async } from 'q';
                             if(response.data[0].id>0){
                                 me.idcodigoQR.push(response.data[0].id);
                                 me.codigoQR.push(content);
-                                // Swal.fire({
-                                //     type: 'success',
-                                //     title: 'Venta Registrada',
-                                //     showConfirmButton: false,
-                                //     timer: 2000
-                                // })
+                                me.calcularTotal();
                                 me.apareceAlerta('success','Codigo/Cupon validado','Codigo/Cupon agrgado correctamente');
                                 console.log(content);
                             }else{
-                                 me.apareceAlerta('error','No existe Codigo','Intente escanear un código válido');
+                                 me.apareceAlerta('error','Código no Validado','Intente escanear un código válido');
                             }
                         })
                         .catch(function (error) {
                             // handle error
-                            me.apareceAlerta('error','No existe Codigo','Intente escanear un código válido');
+                            me.apareceAlerta('error','Código no Validado','Intente escanear un código válido');
                             // console.log(error);
                         })
                         .then(function () {
@@ -381,19 +370,35 @@ import { async } from 'q';
                     
                 }
             },
+            getDescuento(){
+                var desc = 0;
+                for (let i = 0; i < this.codigoQR.length; i++) {
+                    // me.descuento ++;
+                    desc ++;
+                    
+                }
+                return desc;
+            },
             calcularTotal(){
                 var me = this;
                 // console.log(me.getPersonaId('71887664'));
                 // if (me.getPersonaId(me.nroDNI)) {
                     // if (me.nroDNI.length == 8 && me.nombre != null) {
                         if (parseFloat(this.cantidad)>0) {
-                        me.precioTotal = parseFloat(me.precioMarca) * parseFloat(me.cantidad);
+                        me.precio = parseFloat(me.precioMarca) * parseFloat(me.cantidad);
+                        console.log(me.codigoQR.length);
+                        me.descuento = me.getDescuento();
+                        
+                        me.precioTotal = parseFloat(me.precioMarca) * parseFloat(me.cantidad)-this.getDescuento();
                         console.log(me.precioTotal);
                         
                         document.getElementById("vender").disabled = false;
                         }
                         else{
                             document.getElementById("vender").disabled = true;
+                            me.precio = 0;
+                            me.descuento = 0;
+                            me.precioTotal = 0;
                         }
                     // }
                     // else{
@@ -557,18 +562,29 @@ import { async } from 'q';
                 })
                 .then(function (response) {
                 if (response=!null) {
+                    // for (let i = 0; i < me.codigoQR.length; i++) {
+                    //     me.desactivarCupon(i+1);
+                        
+                    // }
+
                     Swal.fire({
                         type: 'success',
                         title: 'Venta Registrada',
                         showConfirmButton: false,
                         timer: 2000
-                    })
+                    });
+                    me.precio = 0;
+                    me.descuento = 0;
+                    me.precioTotal = 0;
+                    me.nroDNI = '';
+                    me.cantidad = '';
+                    me.codigoQR = [];
                 } 
                     
                 })
                 .catch(function (error) {
                 console.log(error);
-                 Swal.fire({
+                    Swal.fire({
                         type:       'error',
                         title:      'No se pudo registrar la venta',
                         text: 'Error: '+error,
@@ -580,6 +596,19 @@ import { async } from 'q';
             },
             registrarVentaCupon(){
                 
+            },
+            desactivarCupon(id){
+                console.log('entrandfo a desactivar cupon');
+                axios.put('/cupon/desactivar', {
+                    id : id,
+                })
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
             }
         },
         mounted(){
