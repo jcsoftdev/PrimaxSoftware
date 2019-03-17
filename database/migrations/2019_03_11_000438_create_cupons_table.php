@@ -15,12 +15,15 @@ class CreateCuponsTable extends Migration
     {
         Schema::create('cupons', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('serial', 60);
+            $table->string('serial', 60)->unique();
             $table->boolean('condicion')->default(1);
             $table->dateTime('expiracion');
             $table->tinyInteger('actualizaciones')->default(0);
             // $table->timestamps();
         }); 
+        DB::table('cupons')->insert(array('serial'=>'juancarlos','condicion'=> 1,'expiracion'=>now(),'actualizaciones'=>0));
+        DB::table('cupons')->insert(array('serial'=>'juancarlos1','condicion'=> 1,'expiracion'=>now(),'actualizaciones'=>0));
+        DB::table('cupons')->insert(array('serial'=>'juancarlos2','condicion'=> 1,'expiracion'=>now(),'actualizaciones'=>0));
     }
 
     /**
