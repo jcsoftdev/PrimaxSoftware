@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\VentaCupon;
+use App\Models\Venta;
 class VentaCuponController extends Controller
 {
     /**
@@ -34,7 +35,34 @@ class VentaCuponController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $venta = new Venta();
+            $venta->idpersona    = $request->idpersona;
+            $venta->idmarca      = $request->idmarca;
+            // $venta->idusuario = \Auth::user()->id;
+            $venta->idusuario    = $request->idusuario;
+            $venta->hora_fecha   = Carbon::now('America/Lima');
+            $venta->localizacion = $request->localizacion;
+            $venta->cantidad     = $request->cantidad;
+            $venta->total        = $request->total;
+            // echo $venta;
+            $venta->save();
+
+            $ventaCupon = $request->arrayCupon;//Array de detalles
+                //Recorro todos los elementos
+                foreach($ventaCupon as $cp=>$cup)
+                {
+                    $ventaCupon = new VentaCupon    ();
+                    $ventaCupon->idcupon = $cup['idcupon'];       
+                    $ventaCupon->idventa = $venta->id;
+                    $ventaCupon->save();
+                }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        } 
+        
     }
 
     /**

@@ -50,10 +50,10 @@
                             <label class="" for="cupon">Utiliza cupon?</label>
                             <input type="button" @click="abrirModal()" class="btn btn-success " value="Escanear el codigo QR" data-toggle="modal" data-target="#myModal" id="cupon">
                         </div>
-                        <div class="telefono">
+                        <!-- <div class="telefono">
                             <label class="" for="numero">Numero Celular</label>
                             <input id="telefono" v-model="telefono" onKeyUp="" type="number" class="onlyNum" pattern="[0-9] {9}" >
-                        </div>
+                        </div> -->
                     </div>
                     
                     
@@ -174,6 +174,7 @@ import { async } from 'q';
             return{
                 scanner: '',
                 codigoQR: [],
+                idcodigoQR: [],
                 nroDNI: '',
                 condicionDNI:'',
                 nombre: '',
@@ -264,11 +265,41 @@ import { async } from 'q';
                 me.scanner.addListener('scan', function (content) {
                     
                     if (me.codigoQR.indexOf(content) == -1) {
-                        me.codigoQR.push(content);
-                        me.apareceAlerta('success','Escaneado');
-                        console.log(content);
+                        axios.get('/cupon/'+content)
+                        .then(function (response) {
+                            // handle success
+                            console.log(response);
+                            // console.log(response.length);
+                            console.log('id DB: '+response.data[0].id);
+                            // console.log(response.data[0].length);
+                            if(response.data[0].id>0){
+                                me.idcodigoQR.push(response.data[0].id);
+                                me.codigoQR.push(content);
+                                // Swal.fire({
+                                //     type: 'success',
+                                //     title: 'Venta Registrada',
+                                //     showConfirmButton: false,
+                                //     timer: 2000
+                                // })
+                                me.apareceAlerta('success','Codigo/Cupon validado','Codigo/Cupon agrgado correctamente');
+                                console.log(content);
+                            }else{
+                                 me.apareceAlerta('error','No existe Codigo','Intente escanear un código válido');
+                            }
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            me.apareceAlerta('error','No existe Codigo','Intente escanear un código válido');
+                            // console.log(error);
+                        })
+                        .then(function () {
+                            // always executed
+                        });
+                        
+                        
+
                     }else{
-                        me.apareceAlerta('error', 'Codigo Ya existe o no valido');
+                        me.apareceAlerta('error', 'Codigo Ya Agregado');
                     }
                     
                     
@@ -285,21 +316,15 @@ import { async } from 'q';
                 });   
                 
             },
-            apareceAlerta($alert, $mensaje){
-                if ($alert == 'success') {
-                    this.$toasted.success($mensaje,{ 
-                    theme: "bubble", 
-                    position: "top-center", 
-                    duration : 2000,
-                    }).goAway(1500);
-                }
-                if ($alert == 'error') {
-                    this.$toasted.error($mensaje,{ 
-                    theme: "bubble", 
-                    position: "top-center", 
-                    duration : 2000,
-                    }).goAway(1500);
-                }
+            apareceAlerta($type, $title, $mensaje){
+                
+                Swal.fire({
+                    type:       $type,
+                    title:      $title,
+                    text: $mensaje,
+                    showConfirmButton: false,
+                    timer:      3000
+                });
             },
             stopScanner(){
                 let me = this;
@@ -410,7 +435,7 @@ import { async } from 'q';
                 
             },
             registrarCliente(){
-console.log('registrando cliente');
+                console.log('registrando cliente');
                 axios.post('/persona/registrar', {
                 'nombre' : this.nombre,
                 'apellidos' : this.aPaterno + ' ' + this.aMaterno,
@@ -437,7 +462,8 @@ console.log('registrando cliente');
                             var lon = objPosition.coords.longitude;
                             var lat = objPosition.coords.latitude;
 
-                            me.respuestaLocalizacion = "Latitud:" + lat + " Longitud:" + lon + "";
+                            // me.respuestaLocalizacion = "Latitud:" + lat + " Longitud:" + lon + "";
+                            me.respuestaLocalizacion = "" + lat + " " + lon + "";
 
                         }, function(objPositionError)
                         {
@@ -517,8 +543,9 @@ console.log('registrando cliente');
                 
             },
             registrarVenta(){
-console.log('registrando venta');
+                console.log('registrando venta');
                 var me = this;
+                console.log(me.idcodigoQR);
                 axios.post('/venta/registrar', {
                     'idpersona': me.idpersona,
                     'idmarca': me.idmarca,
@@ -526,12 +553,28 @@ console.log('registrando venta');
                     'localizacion': me.respuestaLocalizacion,
                     'cantidad': me.cantidad,
                     'total': me.precioTotal,
+                    'arrayCupon' : me.idcodigoQR
                 })
                 .then(function (response) {
-                console.log(response);
+                if (response=!null) {
+                    Swal.fire({
+                        type: 'success',
+                        title: 'Venta Registrada',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                } 
+                    
                 })
                 .catch(function (error) {
                 console.log(error);
+                 Swal.fire({
+                        type:       'error',
+                        title:      'No se pudo registrar la venta',
+                        text: 'Error: '+error,
+                        showConfirmButton: false,
+                        timer:      3000
+                    })
                 });
 
             },

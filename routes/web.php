@@ -16,12 +16,10 @@ Route::get('/', function () {
 });
 // Cupones
 Route::get('/cupon', 'CuponController@index');
-Route::get('/crear', 'CuponController@store');
+Route::get('/cupon/crear', 'CuponController@store');
+Route::get('/cupon/{dni}', 'CuponController@buscarCuponSerial');
+// login
 
-
-Route::get('/login', function () {
-    return view('login');
-});
 // Marca
 Route::get('/marca', 'MarcaController@index');
 // Persona
@@ -37,3 +35,6 @@ Route::post('/venta/registrar','VentaController@store');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/login', function () {
+    return view('login');
+});

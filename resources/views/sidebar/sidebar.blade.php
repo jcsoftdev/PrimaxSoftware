@@ -19,8 +19,9 @@
     </a>
     
     <ul class="treeview-menu">
-      <li @click="menu=1"><a href="#"><i class="fa fa-circle-o"></i> Venta por marca X</a></li>
-      <li @click="menu=2"><a href="#"><i class="fa fa-circle-o"></i> Venta por marca Y</a></li>
+      <li @click="menu=1"><a href="#"><i class="fa fa-circle-o"></i> Venta de Primax Gas</a></li>
+      <li @click="menu=2"><a href="#"><i class="fa fa-circle-o"></i> Venta de Pecsa Gas</a></li>
+      <li @click="menu=3"><a href="#"><i class="fa fa-circle-o"></i> Venta de Pro Gas</a></li>
     </ul>
     
   </li>
@@ -32,8 +33,8 @@
       </span>
     </a>
     <ul class="treeview-menu">
-      <li @click="menu=3"><a href="#"><i class="fa fa-circle-o"></i> Administrar Usuarios</a></li>
-      <li @click="menu=4"><a href="#"><i class="fa fa-circle-o"></i> Administrar Roles</a></li>
+      <li @click="menu=4"><a href="#"><i class="fa fa-circle-o"></i> Administrar Usuarios</a></li>
+      <li @click="menu=5"><a href="#"><i class="fa fa-circle-o"></i> Administrar Roles</a></li>
     </ul>
   </li>
   <li class="treeview">
@@ -44,8 +45,8 @@
       </span>
     </a>
     <ul class="treeview-menu">
-      <li @click="menu=5"><a href="#"><i class="fa fa-circle-o"></i> Reporte de Cupones</a></li>
-      <li @click="menu=6"><a href="#"><i class="fa fa-circle-o"></i> Data Reporte de Canjeos</a></li>
+      <li @click="menu=6"><a href="#"><i class="fa fa-circle-o"></i> Reporte de Cupones</a></li>
+      <li @click="menu=7"><a href="#"><i class="fa fa-circle-o"></i> Data Reporte de Canjeos</a></li>
     </ul>
   </li>
   

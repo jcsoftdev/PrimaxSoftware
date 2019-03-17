@@ -7,7 +7,11 @@
 
 require('./bootstrap');
 // require('./instascan.min');
+// ES6 Modules or TypeScript
+import Swal from 'sweetalert2';
 
+// CommonJS
+window.Swal = Swal;
 window.Vue = require('vue');
 window.toastr = require('toastr');
 

@@ -131,4 +131,8 @@ class CuponController extends Controller
             echo '<h1>rollback hecho </h1>';
         }
     }
+    public function buscarCuponSerial($cupon){
+        $cupon = Cupon::where("cupons.serial",'=',"$cupon")->get();
+        return $cupon;
+    }
 }
