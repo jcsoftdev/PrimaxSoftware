@@ -9,6 +9,7 @@ require('./bootstrap');
 // require('./instascan.min');
 // ES6 Modules or TypeScript
 import Swal from 'sweetalert2';
+import Datepicker from 'vuejs-datepicker';
 
 // CommonJS
 window.Swal = Swal;
@@ -26,7 +27,10 @@ window.toastr = require('toastr');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('venta-x-component', require('./components/VentaXComponent.vue').default);
+Vue.component('venta-primax-component', require('./components/VentaPrimaxComponent.vue').default);
+Vue.component('venta-pecsa-component', require('./components/VentaPecsaComponent.vue').default);
+Vue.component('venta-pro-component', require('./components/VentaProComponent.vue').default);
+Vue.component('reporte-venta', require('./components/ReporteVenta.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -38,5 +42,8 @@ const app = new Vue({
     el: '#app',
     data: {
         menu: 0
+    },
+    components: {
+        Datepicker
     }
 });

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Venta;
 use App\Models\VentaCupon;
 use App\Models\Cupon;
+use App\Models\Persona;
 use Carbon\Carbon;
 class VentaController extends Controller
 {
@@ -39,13 +40,19 @@ class VentaController extends Controller
     public function store(Request $request)
     {
         try {
+
             DB::beginTransaction();
             $venta = new Venta();
+            
+
+            $date = Carbon::now('America/Lima');
+            
+            $date = $date->toDateString();
             $venta->idpersona    = $request->idpersona;
             $venta->idmarca      = $request->idmarca;
             // $venta->idusuario = \Auth::user()->id;
             $venta->idusuario    = $request->idusuario;
-            $venta->hora_fecha   = Carbon::now('America/Lima');
+            // $venta->fecha   = $date;
             $venta->localizacion = $request->localizacion;
             $venta->cantidad     = $request->cantidad;
             $venta->total        = $request->total;
@@ -114,5 +121,87 @@ class VentaController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function obtenerDetalles(Request $request){
+        if (!$request->ajax()) return redirect('/');
+        
+        $id = $request->id;
+        $detalles = Venta::join('marcas','marcas.id','=','venta.marcaid')
+        ->join('personas','personas.id','=','venta.personaid')
+        ->join('users','users.id','=','venta.userid')
+        ->select('detalle_ventas.cantidad','detalle_ventas.precio','detalle_ventas.descuento',
+        'productos.nombre as producto')
+        ->where('detalle_ventas.idventa','=',$id)
+        ->orderBy('detalle_ventas.id', 'desc')->get();
+        return ['detalles' => $detalles];
+    }
+    public function listarDetalles(Request $request){
+        // if (!$request->ajax()) return redirect('/');
+        // SELECT personas.nombre, 
+        // personas.apellidos, 
+        // marcas.nombre as 'marca', 
+        // marcas.precio, 
+        // ventas.cantidad, 
+        // (ventas.cantidad*marcas.precio) as 'Precio ', 
+        // (SELECT count(venta_cupons.idventa) FROM venta_cupons where venta_cupons.idventa = ventas.id ) as 'descuento', 
+        // ventas.total,
+        // (SELECT personas.nombre from personas where personas.id = users.id) as 'Vendedor'
+
+        // FROM ventas 
+        // inner join personas on personas.id = ventas.idpersona 
+        // inner join users on users.id = ventas.idusuario 
+        // inner join marcas on marcas.id = ventas.idmarca
+        $buscar = $request->buscar;
+        // $criterio = $request->criterio;
+        $id = $request->id;
+        if ($buscar==''){
+            $detalles = Venta::join('marcas','marcas.id','=','ventas.idmarca')
+            ->join('personas','personas.id','=','ventas.idpersona')
+            ->join('users','users.id','=','ventas.idusuario')
+            ->select(
+                'users.usuario',
+                
+                DB::raw('concat(personas.nombre , " ", personas.apellidos) as nombre'),
+                'personas.dni',
+                "marcas.nombre as marca", 
+                'ventas.cantidad', 
+                DB::raw("(marcas.precio * ventas.cantidad ) AS precio"),
+                DB::raw("(SELECT count(venta_cupons.idventa) FROM venta_cupons where venta_cupons.idventa = ventas.id ) as descuento"),
+                "ventas.total",
+                DB::raw('DATE(ventas.created_at) as fecha')
+                )
+            // ->where('Vendedor','=',$criterio)    
+            ->orderBy('ventas.id', 'desc')->paginate(5);
+        }else{
+            $detalles = Venta::join('marcas','marcas.id','=','ventas.idmarca')
+            ->join('personas','personas.id','=','ventas.idpersona')
+            ->join('users','users.id','=','ventas.idusuario')
+            ->select(
+                'users.usuario',
+                
+                DB::raw('concat(personas.nombre , " ", personas.apellidos) as nombre'),
+                'personas.dni',
+                "marcas.nombre as marca", 
+                'ventas.cantidad', 
+                DB::raw("(marcas.precio * ventas.cantidad ) AS precio"),
+                DB::raw("(SELECT count(venta_cupons.idventa) FROM venta_cupons where venta_cupons.idventa = ventas.id ) as descuento"),
+                "ventas.total",
+                DB::raw('DATE(ventas.created_at) as fecha')
+                )
+            ->where('usuario','=',"$buscar")
+            ->orderBy('ventas.id', 'desc')->paginate(5);
+        }
+        return [
+            'pagination' => [
+                'total'        => $detalles->total(),
+                'current_page' => $detalles->currentPage(),
+                'per_page'     => $detalles->perPage(),
+                'last_page'    => $detalles->lastPage(),
+                'from'         => $detalles->firstItem(),
+                'to'           => $detalles->lastItem(),
+            ],
+            'detalles' => $detalles
+        ];
+        
     }
 }

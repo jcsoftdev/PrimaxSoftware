@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\User;
+use App\Models\Persona;
 class UserController extends Controller
 {
     /**
@@ -13,7 +14,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $user = User::all();
+        return $user;
     }
 
     /**
@@ -80,5 +82,14 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function showVendedor(){
+
+        $vendedor = User::select('users.usuario','users.id')
+        ->where('users.idrol','=','1')
+        ->orWhere('users.idrol','=','2')
+        ->orderBy('users.id','asc')
+        ->get();
+        return $vendedor;
     }
 }

@@ -42,7 +42,7 @@ class VentaCuponController extends Controller
             $venta->idmarca      = $request->idmarca;
             // $venta->idusuario = \Auth::user()->id;
             $venta->idusuario    = $request->idusuario;
-            $venta->hora_fecha   = Carbon::now('America/Lima');
+            $venta->fecha   = Carbon::now('America/Lima');
             $venta->localizacion = $request->localizacion;
             $venta->cantidad     = $request->cantidad;
             $venta->total        = $request->total;
@@ -53,8 +53,8 @@ class VentaCuponController extends Controller
                 //Recorro todos los elementos
                 foreach($ventaCupon as $cp=>$cup)
                 {
-                    $ventaCupon = new VentaCupon    ();
-                    $ventaCupon->idcupon = $cup['idcupon'];       
+                    $ventaCupon = new VentaCupon();
+                    $ventaCupon->idcupon = $cup['idcupon'];
                     $ventaCupon->idventa = $venta->id;
                     $ventaCupon->save();
                 }

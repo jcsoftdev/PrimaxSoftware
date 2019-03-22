@@ -183,7 +183,7 @@ import { async } from 'q';
                 precioTotal:0,
                 idmarca: '',
                 idpersona: 0,
-                hora_fecha: '',
+                fecha: '',
                 respuestaLocalizacion: '',
             }
         },

@@ -9,8 +9,8 @@ class VentaCupon extends Model
     protected $table = 'venta_cupons';
     protected $fillable = ['idcupon','idventa'];
     // public $timestamps = false;
-    public function ventaCupon()
-     {
-         return $this->belongsTo('App\Models\VentaCupon');
-     }
+    public function venta()
+    {
+        return $this->hasMany('App\Models\VentaCupon');
+    }
 }

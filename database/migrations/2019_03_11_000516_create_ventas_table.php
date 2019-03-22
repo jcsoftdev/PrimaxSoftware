@@ -22,7 +22,6 @@ class CreateVentasTable extends Migration
             $table->foreign('idmarca')->references('id')->on('marcas');
             $table->integer('idusuario')->unsigned();
             $table->foreign('idusuario')->references('id')->on('users');
-            $table->datetime('hora_fecha');
             $table->string('localizacion',1000);
             $table->smallInteger('cantidad');
             $table->double('total',2);

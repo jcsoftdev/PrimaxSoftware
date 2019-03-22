@@ -21,7 +21,7 @@
     <ul class="treeview-menu">
       <li @click="menu=1"><a href="#"><i class="fa fa-circle-o"></i> Venta de Primax Gas</a></li>
       <li @click="menu=2"><a href="#"><i class="fa fa-circle-o"></i> Venta de Pecsa Gas</a></li>
-      <li @click="menu=3"><a href="#"><i class="fa fa-circle-o"></i> Venta de Pro Gas</a></li>
+      <li @click="menu=3"><a href="#"><i class="fa fa-circle-o"></i> Venta VIP</a></li>
     </ul>
     
   </li>
@@ -47,6 +47,7 @@
     <ul class="treeview-menu">
       <li @click="menu=6"><a href="#"><i class="fa fa-circle-o"></i> Reporte de Cupones</a></li>
       <li @click="menu=7"><a href="#"><i class="fa fa-circle-o"></i> Data Reporte de Canjeos</a></li>
+      <li @click="menu=8"><a href="#"><i class="fa fa-circle-o"></i> Reporte de ventas</a></li>
     </ul>
   </li>
   
