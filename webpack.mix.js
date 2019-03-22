@@ -19,6 +19,7 @@ mix.styles([
    'resources/assets/css/AdminLTE.css',
    'resources/assets/css/_all-skins.min.css',
    'resources/assets/css/blue.css',
+   'resources/assets/css/myStyle.css',
 ], 'public/css/plantilla.css')
    .scripts([  
       'resources/assets/js/jquery.min.js',

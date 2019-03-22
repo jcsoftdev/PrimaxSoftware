@@ -6,14 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    protected $fillable = ['idpersona','idrol','username','password','condition'];
+     protected $fillable = [
+        'id', 'usuario', 'password','condicion','idrol', 'remember_token'
+    ];
+    
     // public $timestamps = false;
-    public function rol()
-    {
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
+
+    public function rol(){
         return $this->belongsTo('App\Models\Rol');
     }
-    public function persona()
-    {
+
+    public function persona(){
         return $this->belongsTo('App\Models\Persona');
     }
 }

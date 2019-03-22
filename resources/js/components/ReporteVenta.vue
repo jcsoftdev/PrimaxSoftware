@@ -1,24 +1,43 @@
 <template>
     <main class="main">
             <!-- Breadcrumb -->
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Escritorio</a></li>
-            </ol>
+            <section class="content-header">
+                    <h1 >
+                        <span >Reporte Ventas</span>
+                        <small >Consulte Reporte por Vendedor y Fecha</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">Reporte de Ventas</li>
+                    </ol>
+                </section>
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
+                
                 <div class="card">
-                    <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Ventas
-                    </div>
+                    
                     <!-- Listado-->
                     <template v-if="listado==1">
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <div class="input-group  d-flex">
+                                    <div class="fecha">
+                                        <label >Fecha</label>
+                                        <datepicker v-model="date" name="fecha" 
+                                            @opened="datepickerAbierto" 
+                                            @selected="fechaSeleccionada" 
+                                            @closed="datepickerCerrado"
+                                            :format="customFormatter"
+                                        ></datepicker>
+                                        <!-- <datepicker @opened="datepickerAbierto" 
+                                        @selected="fechaSeleccionada" 
+                                        @closed="datepickerCerrado"></datepicker> -->
+                                        <!-- <datetime @click="customFormatter(date)"  v-model="date"  ></datetime> -->
+                                    </div>
                                     <div class="vendedor d-flex">
                                         <label for="vendedor">Vendedores</label>
-                                        <select @change="buscarPorVendedor(1, getVendedor())" class="form-control col-md-3"  id="vendedor" name="vendedor">
+                                        <select @change="buscarVenta(1, getVendedor(),customFormatter(date))" class="form-control col-md-3"  id="vendedor" name="vendedor">
                                             <option   v-for="vendedor in vendedores" :key="vendedor.id" v-text="vendedor" >
                                                 
                                             </option>
@@ -28,14 +47,7 @@
                                         <!-- <button type="submit"  class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button> -->
                                     </div>
 
-                                    <div class="fecha">
-                                        <label >Fecha</label>
-                                        <datepicker ></datepicker>
-                                        <!-- <datepicker @opened="datepickerAbierto" 
-                                        @selected="fechaSeleccionada" 
-                                        @closed="datepickerCerrado"></datepicker> -->
-                                        <!-- <datetime @click="customFormatter(date)"  v-model="date"  ></datetime> -->
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -90,22 +102,29 @@
                                         <td >115</td>
                                         <td >hoy</td>
                                     </tr>                                 -->
+                                    <tr style="background-color: #CEECF5;">
+                                            <td colspan="6" align="right"><strong>Descuento</strong></td>
+                                            <td>$ {{descuento=calcularDescuento}}</td>
+                                            <td colspan="0" align="right"><strong>Total Neto:</strong></td>
+                                            <td>$ {{total=calcularTotal}}</td>
+                                        </tr>
                                 </tbody>
                             </table>
-                        </div>
-                        <!-- <nav>
+                            <nav>
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,usuario,customFormatter(date))">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,usuario,customFormatter(date))" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,usuario,customFormatter(date))">Sig</a>
                                 </li>
                             </ul>
-                        </nav> -->
+                        </nav>
+                        </div>
+                        
                     </div>
                     </template>
                     <!--Fin Listado-->
@@ -121,7 +140,7 @@
 <script>
     import Toasted from 'vue-toasted';
     import { async } from 'q';
-
+      import moment from "moment";
    
 
     // you can also pass options, check options reference below
@@ -138,7 +157,6 @@
                 ],
                 buscar:'',
                 listado: 1,
-                pagesNumber: 0,
                 arrayDetalle:[],
                 pagination : {
                     'total' : 0,
@@ -148,23 +166,71 @@
                     'from' : 0,
                     'to' : 0,
                 },
-                date : '',
+                usuario:'',
+                date: new Date(),
             }
         },
-        
+        computed:{
+            isActived: function(){
+                return this.pagination.current_page;
+            },
+            //Calcula los elementos de la paginación
+            pagesNumber: function() {
+                if(!this.pagination.to) {
+                    return [];
+                }
+                
+                var from = this.pagination.current_page - this.offset; 
+                if(from < 1) {
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2); 
+                if(to >= this.pagination.last_page){
+                    to = this.pagination.last_page;
+                }  
+
+                var pagesArray = [];
+                while(from <= to) {
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
+            },
+            calcularTotal: function(){
+                var resultado=0.0;
+                for(var i=0;i<this.arrayDetalle.length;i++){
+                    resultado=resultado+(this.arrayDetalle[i].precio-this.arrayDetalle[i].descuento)
+                }
+                return resultado;
+            },
+            calcularDescuento: function(){
+                var resultado=0.0;
+                for(var i=0;i<this.arrayDetalle.length;i++){
+                    resultado=resultado+(this.arrayDetalle[i].descuento)
+                }
+                return resultado;
+            }
+        },
         methods:{
             customFormatter(date) {
-                    return moment(date).format('D MMMM YYYY');
-                    console.log(date);
+                    return moment(date).format('DD MMM YYYY');
             },
             datepickerAbierto: function() {
                 console.log('El datepicker ha sido abierto');
             },
             fechaSeleccionada: function() {
-                console.log('Una fecha ha sido seleccionada');
+                console.log(this.date);
+                
+                 
+                 
+                
+                // this.buscarVenta(1,this.usuario,this.date);
             },
             datepickerCerrado: function() {
                 console.log('El datepicker ha sido cerrado');
+                this.buscarVenta(1,this.usuario,this.customFormatter(this.date))
+                console.log(this.date);
             },
             listarVendedores(){
                 var me =this;
@@ -190,11 +256,12 @@
             getVendedor(){
                 var vendedor = document.getElementById("vendedor").value;
                 console.log(vendedor);
+                this.usuario = vendedor;
                 return vendedor;
             },
-            buscarPorVendedor(page,buscar){
+            buscarVenta(page,usuario,fecha){
                 let me=this;
-                var url='/venta/detalle?page=' + page + '&buscar='+ buscar ;
+                var url='/venta/detalle?page=' + page + '&usuario='+ usuario + '&fecha='+ fecha ;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
                     me.arrayDetalle = respuesta.detalles.data;
@@ -203,12 +270,23 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            convert(selector) {
+                var from = $(selector).val().split("-")
+                return new Date(from[2], from[1] - 1, from[0])
+            },
+            cambiarPagina(page,usuario,fecha){
+                let me = this;
+                //Actualiza la página actual
+                me.pagination.current_page = page;
+                //Envia la petición para visualizar la data de esa página
+                me.buscarVenta(page,usuario,fecha);
             }
         },
         mounted(){
-            
+            console.log(this.customFormatter());
             this.listarVendedores();
-            this.buscarPorVendedor(1,'');
+            this.buscarVenta(1,this.usuario,this.customFormatter(this.date))
             // console.log(this.respuestaLocalizacion);
             // console.log(this.getPersonaId('71887664'));
             // this.validarCliente();

@@ -13,6 +13,7 @@ import Datepicker from 'vuejs-datepicker';
 
 // CommonJS
 window.Swal = Swal;
+window.Swal = require('sweetalert2');
 window.Vue = require('vue');
 window.toastr = require('toastr');
 
@@ -31,7 +32,11 @@ Vue.component('venta-primax-component', require('./components/VentaPrimaxCompone
 Vue.component('venta-pecsa-component', require('./components/VentaPecsaComponent.vue').default);
 Vue.component('venta-pro-component', require('./components/VentaProComponent.vue').default);
 Vue.component('reporte-venta', require('./components/ReporteVenta.vue').default);
-
+Vue.component('usuario-component', require('./components/UserComponent.vue').default);
+Vue.component('cupon-component', require('./components/CuponComponent.vue').default);
+Vue.component('rol-component', require('./components/RolComponent.vue').default);
+Vue.component('marca-component', require('./components/MarcaComponent.vue').default);
+Vue.component('datepicker', Datepicker)
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -42,8 +47,5 @@ const app = new Vue({
     el: '#app',
     data: {
         menu: 0
-    },
-    components: {
-        Datepicker
     }
 });

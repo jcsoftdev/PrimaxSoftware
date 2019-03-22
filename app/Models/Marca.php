@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Marca extends Model
 {
-     protected $fillable = ['nombre','precio'];
+     public $timestamps = false;
+     protected $fillable = ['id','nombre','precio'];
 }

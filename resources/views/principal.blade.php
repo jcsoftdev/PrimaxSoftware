@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="css/plantilla.css">
   <script type="text/javascript" src="js/instascan.min.js"></script>
   <script type="text/javascript" src="js/toastr.js"></script>
+  <link rel="icon" type="image/png" href="/imágenes/mifavicon.png" />
+
   <!-- Última versión compilada y minificada -->
   {{-- <script src="https://tecactus-4b42.kxcdn.com/reniec-sunat-js.min.js"></script> --}}
   <!-- Bootstrap 3.3.7 -->
@@ -39,7 +41,7 @@
     href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 
-<body class="hold-transition skin-yellow sidebar-mini">
+<body class="hold-transition skin-yellow sidebar-mini" oncontextmenu='return false' {{--onkeydown='return false'--}} onselectstart='return false' ondragstart="return false">
   <!-- Site wrapper -->
   <div class="wrapper">
 
@@ -160,12 +162,12 @@
                   <img src="https://jcsoftia.github.io/MiMarca/img/logo.png" class="img-circle" alt="User Image">
 
                   <p>
-                    Juan Carlos Valencia López - Web Developer
-                    <small>Member since Nov. 2012</small>
+                    {{Auth::user()->usuario}}
+                    {{-- <small>Member since Nov. 2012</small> --}}
                   </p>
                 </li>
                 <!-- Menu Body -->
-                <li class="user-body">
+                {{-- <li class="user-body">
                   <div class="row">
                     <div class="col-xs-4 text-center">
                       <a href="#">Followers</a>
@@ -176,7 +178,7 @@
                     <div class="col-xs-4 text-center">
                       <a href="#">Friends</a>
                     </div>
-                  </div>
+                  </div> --}}
                   <!-- /.row -->
                 </li>
                 <!-- Menu Footer-->
@@ -185,7 +187,11 @@
                     <a href="#" class="btn btn-default btn-flat">Profile</a>
                   </div>
                   <div class="pull-right">
-                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="{{ route('logout') }}" class="btn btn-default btn-flat"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                  >Sign out</a>
+                  <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                  {{ csrf_field()}}</form>
                   </div>
                 </li>
               </ul>
@@ -214,7 +220,17 @@
           </div>
           
           <!-- sidebar menu: : style can be found in sidebar.less -->
-          @include('sidebar.sidebar')
+          @if (Auth::check())
+              
+              @if (Auth::user()->idrol==1)
+                  @include('sidebar.AdministradorSidebar')
+              @elseif(Auth::user()->idrol==2)
+                  @include('sidebar.VendedorSidebar')
+              @else
+
+              @endif
+              
+          @endif
 
           <!-- search form -->
           <form action="#" method="get" class="sidebar-form">

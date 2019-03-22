@@ -19,7 +19,7 @@ class CreatePersonasTable extends Migration
             $table->string('apellidos',191);
             $table->string('dni',8)->unique();
             $table->string('email',100)->nullable();
-            $table->string('telefono',9)->nullable();
+            $table->string('telefono',12)->nullable();
             $table->timestamps();
         });
          DB::table('personas')->insert(array(

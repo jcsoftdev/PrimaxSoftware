@@ -27,6 +27,7 @@
     "dependencies": {
         "instascan": "^1.0.0",
         "luxon": "^1.11.4",
+        "moment": "^2.24.0",
         "reniec-sunat-js": "^1.0.0",
         "sweetalert2": "^8.5.0",
         "vee-validate": "^2.2.0",

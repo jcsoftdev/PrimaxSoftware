@@ -1,36 +1,31 @@
 @extends('auth.contenido')
 @section('login')
     <div class="login-box-body">
-    <p class="login-box-msg">Inicia sesión para ingresar al PrimaxSoftware</p>
+    <p class="login-box-msg">Inicie sesión para ingresar a PrimaxSoftware</p>
 
-    <form action="#" method="post">
-      <div class="form-group has-feedback">
-        <input type="text" class="form-control" placeholder="Email">
+    <form method="POST" class="form-horizontal was-validated" action="{{ route('login') }}">
+      {{ csrf_field()}}
+      <div class="form-group has-feedback{{$errors->has('usuario' ? 'is-invalid' : '')}}">
+        
+        <input value="{{old('usuario')}}" type="text" class="form-control" placeholder="username" id="usuario" name="usuario">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        {!!$errors->first('usuario','<span class="invalid-feedback text-danger">:message</span>')!!}
       </div>
-      <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password">
+      <div class="form-group has-feedback{{$errors->has('password' ? 'is-invalid' : '')}}" >
+        <input type="password" class="form-control" placeholder="Password" id="password" name="password">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        {!!$errors->first('password','<span class="invalid-feedback text-danger">:message</span>')!!}
       </div>
-      <div class="row">
-        <div class="col-xs-8">
-          <div class="checkbox icheck">
-            <label>
-              <input type="checkbox"> Remember Me
-            </label>
-          </div>
-        </div>
-        <!-- /.col -->
-        <div class="col-xs-4">
+      
           <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
-        </div>
+        
         <!-- /.col -->
       </div>
     </form>
 
     
 
-    <a href="#">I forgot my password</a><br>
+    {{-- <a href="#">I forgot my password</a><br> --}}
 
   </div>
 @endsection

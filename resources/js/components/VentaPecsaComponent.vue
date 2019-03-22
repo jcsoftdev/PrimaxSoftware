@@ -554,7 +554,6 @@ import { async } from 'q';
                 axios.post('/venta/registrar', {
                     'idpersona': me.idpersona,
                     'idmarca': me.idmarca,
-                    'idusuario': 1,
                     'localizacion': me.respuestaLocalizacion,
                     'cantidad': me.cantidad,
                     'total': me.precioTotal,
