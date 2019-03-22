@@ -328,9 +328,6 @@ import { async } from 'q';
                 var url = '/marca';
                 axios.get ( url ).then( function (response){
                     var respuesta = response.data;
-                    // console.log(respuesta);
-                    // console.log(respuesta[0].nombre);
-                    // console.log(respuesta.nombre);
                     me.idmarca = respuesta[0].id;
                     me.marca = (respuesta[0].nombre);
                     me.precioMarca = respuesta[0].precio;

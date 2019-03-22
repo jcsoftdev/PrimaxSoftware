@@ -158,9 +158,6 @@
 
     // you can also pass options, check options reference below
     Vue.use(Toasted);
-    // import VeeValidate from 'vee-validate';
-    // Vue.use(VeeValidate);
-    // you can call like this in your component
     
     export default {
         data() {

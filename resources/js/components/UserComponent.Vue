@@ -346,7 +346,6 @@
                 if (this.idrol==0) this.errorMostrarMsjPersona.push("Debes seleccionar un rol para el usuario.");
 
                 if (this.errorMostrarMsjPersona.length) this.errorPersona = 1;
-
                 return this.errorPersona;
             },
             cerrarModal(){

@@ -12,7 +12,7 @@
             <li class="active">Ventas</li>
           </ol>
         </section>
-         <!-- Main content -->
+         <!-- Main content  -->
          <div class="mi-contenido container-fluid">
              <section class="content">
                 <form action="">
