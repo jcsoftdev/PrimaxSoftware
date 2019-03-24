@@ -55,7 +55,7 @@
                             <table class="table table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        <th>Opciones</th>
+                                        <!-- <th>Opciones</th> -->
                                         <th>Vendedor</th>
                                         <th>Cliente</th>
                                         <th>DNI</th>
@@ -69,11 +69,11 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="detalle in arrayDetalle" :key="detalle.id">
-                                        <td>
+                                        <!-- <td>
                                             <button type="button" @click="verdetalle(detalle.id)" class="btn btn-success btn-sm">
                                             <i class="icon-eye"></i>
                                             </button>
-                                        </td>
+                                        </td> -->
                                         <td v-text="detalle.usuario"></td>
                                         <td v-text="detalle.nombre"></td>
                                         <td v-text="detalle.dni"></td>

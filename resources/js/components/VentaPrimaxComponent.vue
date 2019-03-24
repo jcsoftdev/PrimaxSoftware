@@ -20,7 +20,7 @@
                         <div class="dni">
                             <label class="" for="dni">DNI</label>
                             <!-- <input type="text" name="DNI" id="dni" pattern="[0-9]{9}" placeholder="Ingrese el Nro de DNI"> -->
-                            <input v-model="nroDNI"  :maxlength="8" v-on:keyup="buscarDNI(); getPersonaId(nroDNI)" id="dni" class="onlyNum"  placeholder="Ingrese DNI" >
+                            <input v-model="nroDNI"  :maxlength="8" v-on:keyup="buscarDNI(); getPersonaId(nroDNI)" type="number" id="dni" class="onlyNum"  placeholder="Ingrese DNI" >
                             
                         </div>
                         
@@ -44,7 +44,7 @@
 
                         <div class="cantidad onlyNum">
                             <label class="" for="cantidad" >Cantidad de balones</label>
-                            <input v-model="cantidad" id="cantidad" v-on:keyup="calcularTotal()" type="text" class="onlyNum" placeholder="Cantidad de balones" value="">
+                            <input v-model="cantidad" id="cantidad" v-on:keyup="calcularTotal()" type="number" class="onlyNum" placeholder="Cantidad de balones" value="">
                             
                         </div>
                         <div class="cupon">
@@ -255,7 +255,8 @@ import { async } from 'q';
             },
             scanearQR(){
                 let me = this;
-                me.scanner = new Instascan.Scanner({ video: document.getElementById('modalCamera') });
+                
+                me.scanner = new Instascan.Scanner({ video: document.getElementById('modalCamera'), mirror: false , });
                 me.scanner.addListener('scan', function (content) {
                     
                     if (me.codigoQR.indexOf(content) == -1) {
@@ -295,13 +296,24 @@ import { async } from 'q';
                     // me.scanner.stop();
                 });
                 Instascan.Camera.getCameras().then(function (cameras) {
-                    if (cameras.length > 0) {
-                    me.scanner.start(cameras[0]);
-                    } else {
-                    console.error('No cameras found.');
+                    if (cameras.length == 3) {
+                        me.scanner.start(cameras[2]);
+                    } else if(cameras.length == 2) {
+                        me.scanner.start(cameras[1]);
+                    }else if(cameras.length > 0) {
+                        me.scanner.start(cameras[0]);
+                    }else{
+                        console.error('No cameras found.');
                     }
                 }).catch(function (e) {
                     console.error(e);
+
+                    Swal.fire(
+                        'No se puede acceder a la camara',
+                        'Es probable que su navegador bloqueo el acceso a la camara',
+                        'error'
+                    )
+                    this.stopScanner();
                 });   
                 
             },
@@ -590,11 +602,8 @@ import { async } from 'q';
                 });
 
             },
-            registrarVentaCupon(){
-                
-            },
             desactivarCupon(id){
-                console.log('entrandfo a desactivar cupon');
+                console.log('entrando a desactivar cupon');
                 axios.put('/cupon/desactivar', {
                     id : id,
                 })
