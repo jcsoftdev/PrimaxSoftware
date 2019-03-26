@@ -36,6 +36,8 @@ Vue.component('usuario-component', require('./components/UserComponent.vue').def
 Vue.component('cupon-component', require('./components/CuponComponent.vue').default);
 Vue.component('rol-component', require('./components/RolComponent.vue').default);
 Vue.component('marca-component', require('./components/MarcaComponent.vue').default);
+Vue.component('reporte-vendedor-component', require('./components/ReporteVendedorVenta.vue').default);
+Vue.component('dashboard-component', require('./components/DashBoardComponent.vue').default);
 Vue.component('datepicker', Datepicker)
 /**
  * Next, we will create a fresh Vue application instance and attach it to

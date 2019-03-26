@@ -143,4 +143,34 @@ class UserController extends Controller
         ->get();
         return $vendedor;
     }
+    public function obtenerDetalleVendedor(Request $request){
+        // if (!$request->ajax()) return redirect('/');
+        
+        // $date = Carbon::createFromIsoFormat('DD MMM YYYY', $fecha);
+
+        //     $date = $date->isoFormat('YYYY-MM-D');
+            
+        $detalles = User::join('personas','users.id','=','personas.id')
+        ->join('ventas','users.id','=','ventas.idusuario')
+        ->join('marcas','marcas.id','=','ventas.idmarca')
+        ->select(
+            'users.usuario',
+            
+            DB::raw('concat(personas.nombre , " ", personas.apellidos) as nombre'),
+            'personas.dni',
+            "marcas.nombre as marca", 
+            'ventas.cantidad', 
+            DB::raw("(marcas.precio * ventas.cantidad ) AS precio"),
+            DB::raw("(SELECT count(venta_cupons.idventa) FROM venta_cupons where venta_cupons.idventa = ventas.id ) as descuento"),
+            DB::raw("(SELECT SUM(ventas.cantidad) from ventas where ventas.idpersona = users.id) as cant"),
+            "ventas.total",
+            DB::raw('DATE(ventas.created_at) as fecha')
+            )
+        // ->whereDate('ventas.created_at', $date)
+        // ->where('Vendedor','=',$criterio)   
+        // ->where('ventas.idpersona','users.id') 
+        ->groupBY('users.usuario', 'personas.nombre','personas.apellidos','personas.dni','marcas.nombre','ventas.cantidad','marcas.precio','ventas.id','ventas.total','ventas.created_at','users.id')
+        ->orderBy('ventas.id', 'desc')->get();
+        return $detalles;
+    }
 }

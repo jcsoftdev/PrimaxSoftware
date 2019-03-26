@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,9 +13,13 @@ class LoginController extends Controller
     }
 
     public function login(Request $request){
-        $this->validateLogin($request);
+        $this->validateLogin($request);        
+
         if (Auth::attempt(['usuario' => $request->usuario,'password' => $request->password,'condicion'=>1])){
             return redirect()->route('main');
+        }else
+        {
+        	// return redirect('/')->withInput();
         }
 
         return back()
@@ -37,5 +40,5 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         return redirect('/');
-    }   
+    }
 }

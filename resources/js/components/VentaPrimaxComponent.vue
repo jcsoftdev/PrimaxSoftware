@@ -16,7 +16,7 @@
          <div class="mi-contenido container-fluid">
              <section class="content">
                 <form action="">
-                    <div class="datos d-flex" >
+                    <div class="datos d-flex f-start" >
                         <div class="dni">
                             <label class="" for="dni">DNI</label>
                             <!-- <input type="text" name="DNI" id="dni" pattern="[0-9]{9}" placeholder="Ingrese el Nro de DNI"> -->
@@ -59,7 +59,7 @@
                     
                     
 
-                    <div  class="datos d-flex flex-r" >
+                    <div  class="datos d-flex f-start flex-r" >
                         <div class="col-sm-6"></div>
                         <div class="col-sm-6">
                             <div class="precio">
@@ -130,7 +130,7 @@
                                 <!-- <button @click="stopScanner" type="button" class="close" data-dismiss="modal">&times;</button> -->
                                 <h4 class="modal-title">Escanee el codigo QR</h4>
                             </div>
-                            <div class="modal-body d-flex center">
+                            <div class="modal-body d-flex f-start center">
                                 
                                 <video id="modalCamera" class="center ">
                                     
@@ -221,10 +221,11 @@ import { async } from 'q';
                         me.aMaterno= response.data.apellidoMaterno;
                         if (me.nombre != undefined) {
                             if (me.nombre.length > 0 && me.nroDNI.length == 8) {
-                                me.condicionDNI = 'DNI Validado'
+                               
                                 document.getElementById("cantidad").disabled = false;
                                 document.getElementById("cupon").disabled = false;
                             }else{
+                                me.condicionDNI = 'DNI No Validado'
                                 document.getElementById("cantidad").disabled = true;
                                 document.getElementById("cupon").disabled = true;
                                 document.getElementById("vender").disabled = true;
@@ -239,7 +240,8 @@ import { async } from 'q';
                         
                     })
                     .catch(e => {
-                        console.log(e);
+                        // console.log(e);
+                        console.log('DNI puede que no existe');
                     });
                 }else{
                     this.nombre = undefined;
@@ -581,6 +583,9 @@ import { async } from 'q';
                         showConfirmButton: false,
                         timer: 2000
                     });
+                    // document.getElementById("cantidad").disabled = true;
+                    document.getElementById("vender").disabled = true;
+                     me.condicionDNI = 'Ingrese Numero de DNI'
                     me.precio = 0;
                     me.descuento = 0;
                     me.precioTotal = 0;
@@ -698,6 +703,11 @@ p{
 }
 .d-flex{
     display: flex;
+    
+}
+.f-start{
+    align-items: inherit !important;
+    justify-content: flex-start !important;
 }
 .flex-r{
     flex-direction: row !important;

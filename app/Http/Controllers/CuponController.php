@@ -13,9 +13,15 @@ class CuponController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cupones = Cupon::all();
+        $condicion = $request->condicion;
+        $cupones = Cupon::select(
+            'cupons.id',
+            'cupons.serial',
+            'cupons.condicion',
+            'cupons.expiracion'
+            )->where('cupons.condicion','=',$condicion)->get();
         return $cupones;
     }
 
@@ -37,7 +43,9 @@ class CuponController extends Controller
      */
     public function store(Request $request)
     {
-        $this->InsertCantCupon(500, 5);
+        $cantidad = $request->cantidad;
+        $meses = $request->meses;
+        $this->InsertCantCupon($meses, $cantidad);
     }
 
     /**
@@ -88,7 +96,7 @@ class CuponController extends Controller
     public function crearCodigo(){
         
         $aleatoria = array("");
-        $caracteres = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.#$%^&*()_!';
+        $caracteres = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         for($x = 0; $x < 3; $x++){
             $aleatoria[] = substr(str_shuffle($caracteres), 0, 20);
             $codigo[] = $aleatoria;
@@ -124,11 +132,9 @@ class CuponController extends Controller
             for ($i=0; $i < $cant; $i++) { 
                 $this->cuponInsertar($month);
             }
-            echo '<h1>se  inserto</h1>';
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            echo '<h1>rollback hecho </h1>';
         }
     }
     public function buscarCuponSerial($cupon){

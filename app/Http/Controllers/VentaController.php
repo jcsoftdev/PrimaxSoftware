@@ -119,37 +119,138 @@ class VentaController extends Controller
     {
         //
     }
-    public function obtenerDetalles(Request $request){
-        if (!$request->ajax()) return redirect('/');
-        
-        $id = $request->id;
-        $detalles = Venta::join('marcas','marcas.id','=','venta.marcaid')
-        ->join('personas','personas.id','=','venta.personaid')
-        ->join('users','users.id','=','venta.userid')
-        ->select('detalle_ventas.cantidad','detalle_ventas.precio','detalle_ventas.descuento',
-        'productos.nombre as producto')
-        ->where('detalle_ventas.idventa','=',$id)
-        ->orderBy('detalle_ventas.id', 'desc')->get();
-        return ['detalles' => $detalles];
-    }
-    public function listarDetalles(Request $request){
-        // if (!$request->ajax()) return redirect('/');
-        // SELECT personas.nombre, 
-        // personas.apellidos, 
-        // marcas.nombre as 'marca', 
-        // marcas.precio, 
-        // ventas.cantidad, 
-        // (ventas.cantidad*marcas.precio) as 'Precio ', 
-        // (SELECT count(venta_cupons.idventa) FROM venta_cupons where venta_cupons.idventa = ventas.id ) as 'descuento', 
-        // ventas.total,
-        // (SELECT personas.nombre from personas where personas.id = users.id) as 'Vendedor'
+// SELECT 
 
-        // FROM ventas 
-        // inner join personas on personas.id = ventas.idpersona 
-        // inner join users on users.id = ventas.idusuario 
-        // inner join marcas on marcas.id = ventas.idmarca
+// (SUM(ventas.total )) as 'precio', 
+// (SELECT count(venta_cupons.idventa) FROM venta_cupons where venta_cupons.idventa = ventas.id ) as descuento,
+// (SUM(ventas.cantidad)) as cant ,
+// users.usuario , 
+// personas.nombre, 
+// personas.apellidos
+// from ventas 
+// inner join users on users.id = ventas.idusuario
+// INNER JOIN personas on users.id = personas.id
+// INNER JOIN marcas on marcas.id = ventas.idmarca
+
+
+
+    // SELECT 
+    // users.usuario , 
+    // personas.nombre, 
+    // personas.apellidos, 
+    // (SUM(marcas.precio * ventas.cantidad )) as 'precio', 
+    // (SELECT count(venta_cupons.idventa) FROM venta_cupons where venta_cupons.idventa = ventas.id ) as descuento,
+    // (SUM(ventas.cantidad)) as cant 
+    // from ventas 
+    // inner join users on users.id = ventas.idusuario
+    // INNER JOIN personas on users.id = personas.id
+    // INNER JOIN marcas on marcas.id = ventas.idmarca
+
+
+
+
+
+
+
+
+
+// SELECT 
+// users.usuario,
+// personas.nombre, 
+// personas.apellidos, 
+// ordenado.id
+// idusuario, 
+// marcas.nombre,
+// SUM(cantidad) as 'CantidadVendida',
+// SUM(total) as 'Total de Ingreso' 
+// FROM ( SELECT * from ventas ORDER BY ventas.total DESC) as ordenado 
+
+// inner join personas on personas.id = ordenado.idusuario
+// inner join users on users.id = ordenado.idusuario
+// INNER join marcas on marcas.id = ordenado.idmarca
+// GROUP by idusuario, idmarca order by idusuario
+
+
+
+// SELECT 
+// idusuario,
+// ordenado.created_at,
+// users.usuario,
+// personas.nombre, 
+// personas.apellidos, 
+// marcas.nombre as marca,
+// SUM(cantidad) as 'CantVenta',
+// SUM(total) as 'IngresoT' ,
+// DATE(ordenado.created_at) as fecha
+// FROM ( SELECT * from ventas ORDER BY ventas.total DESC) as ordenado 
+// inner join personas on personas.id = ordenado.idusuario
+// inner join users on users.id = ordenado.idusuario
+// INNER join marcas on marcas.id = ordenado.idmarca
+// where DATE(ordenado.created_at) = '2019-03-25'
+// GROUP by users.usuario,
+// personas.nombre, 
+// personas.apellidos, 
+// marcas.id,
+// marcas.nombre 
+// order by idusuario
+
+    public function obtenerDetallerVendedor(Request $request){
+        $fecha = $request->fecha;
+        
+        if ($fecha=='') {
+            $detalle = DB::select("SELECT 
+                                idusuario,
+                                users.usuario,
+                                personas.nombre, 
+                                personas.apellidos, 
+                                marcas.nombre as marca,
+                                SUM(cantidad) as 'CantVenta',
+                                SUM(total) as 'IngresoT' ,
+                                DATE(ordenado.created_at) as fecha
+                                FROM ( SELECT * from ventas ORDER BY ventas.total DESC) as ordenado 
+                                inner join personas on personas.id = ordenado.idusuario
+                                inner join users on users.id = ordenado.idusuario
+                                INNER join marcas on marcas.id = ordenado.idmarca
+                                GROUP by users.usuario,
+                                personas.nombre, 
+                                personas.apellidos, 
+                                marcas.id,
+                                marcas.nombre 
+                                order by idusuario");
+            return $detalle;
+        } else {
+            $date = Carbon::createFromIsoFormat('DD MMM YYYY', $fecha);
+
+            $fechasel = $date->isoFormat('YYYY-MM-D');
+            // echo $fechasel;
+            $detalle = DB::select("SELECT 
+                                idusuario,
+                                users.usuario,
+                                personas.nombre, 
+                                personas.apellidos, 
+                                marcas.nombre as marca,
+                                SUM(cantidad) as 'CantVenta',
+                                SUM(total) as 'IngresoT' ,
+                                DATE(ordenado.created_at) as fecha
+                                FROM ( SELECT * from ventas ORDER BY ventas.total DESC) as ordenado 
+                                inner join personas on personas.id = ordenado.idusuario
+                                inner join users on users.id = ordenado.idusuario
+                                INNER join marcas on marcas.id = ordenado.idmarca
+                                where  DATE(ordenado.created_at) = '$fechasel'
+                                GROUP by users.usuario,
+                                personas.nombre, 
+                                personas.apellidos, 
+                                marcas.id,
+                                marcas.nombre 
+                                order by idusuario");
+            return $detalle;
+        }
+        
+    }
+
+    public function listarDetalles(Request $request){
+        if (!$request->ajax()) return redirect('/');
         $buscar = $request->usuario;
-        // $criterio = $request->criterio;
         $fecha = $request->fecha;
         
         if ($fecha=='') {

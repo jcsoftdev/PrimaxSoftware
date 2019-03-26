@@ -4,7 +4,7 @@
               
             @if (Auth::user()->idrol==1)
                 <template v-if="menu==0">
-                    <h1> Dashboard </h1>
+                   <dashboard-component></dashboard-component>
                 </template>
                 <template v-if="menu==1">
                     <venta-primax-component></venta-primax-component>
@@ -22,8 +22,7 @@
                     <rol-component></rol-component>
                 </template>   
                 <template v-if="menu==6">
-                    <h1>Reporte Vendedor</h1>
-                    
+                    <reporte-vendedor-component></reporte-vendedor-component>
                 </template>   
                 <template v-if="menu==7">
                     <reporte-venta></reporte-venta>

@@ -107,7 +107,7 @@
                                             <td>$ {{descuento=calcularDescuento}}</td>
                                             <td colspan="0" align="right"><strong>Total Neto:</strong></td>
                                             <td>$ {{total=calcularTotal}}</td>
-                                        </tr>
+                                    </tr>
                                 </tbody>
                             </table>
                             <nav>

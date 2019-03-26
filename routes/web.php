@@ -11,19 +11,23 @@
 |
 */
 Route::group(['middleware' => ['guest']], function () {
-    Route::get('/','Auth\LoginController@showLoginForm');
+    Route::get('/','Auth\LoginController@showLoginForm')->name('Showlogin');
+    Route::get('/login','Auth\LoginController@showLoginForm');
     Route::post('/login','Auth\LoginController@login')->name('login');
 });
 Route::group(['middleware' => ['auth']], function () {
+    // Auth::routes();
+
     Route::post('/logout','Auth\LoginController@logout')->name('logout');
     Route::get('/main', function () {
         return view('contenido/contenido');
     })->name('main');
+
     Route::group(['middleware' => ['Administrador']], function () {
         // Cupones
         Route::get('/cupon', 'CuponController@index');
-        Route::get('/cupon/crear', 'CuponController@store');
-        Route::get('/cupon/{dni}', 'CuponController@buscarCuponSerial');
+        Route::post('/cupon/crear', 'CuponController@store');
+        Route::get('/cupon/{cupon}', 'CuponController@buscarCuponSerial');
         Route::get('/cupon/desactivar', 'CuponController@desactivar');
         // login
 
@@ -49,6 +53,8 @@ Route::group(['middleware' => ['auth']], function () {
         // Venta
         Route::post('/venta/registrar','VentaController@store');
         Route::get('/venta/detalle','VentaController@listarDetalles');
+        Route::get('/venta/detalleVendedor','VentaController@obtenerDetallerVendedor');
+        
         // VentaCupon
 
         
