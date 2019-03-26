@@ -221,7 +221,7 @@ import { async } from 'q';
                         me.aMaterno= response.data.apellidoMaterno;
                         if (me.nombre != undefined) {
                             if (me.nombre.length > 0 && me.nroDNI.length == 8) {
-                               
+                               me.condicionDNI = 'DNI VALIDADO'
                                 document.getElementById("cantidad").disabled = false;
                                 document.getElementById("cupon").disabled = false;
                             }else{

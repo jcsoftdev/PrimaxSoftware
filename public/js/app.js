@@ -4025,6 +4025,7 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // import VeeValida
 
           if (me.nombre != undefined) {
             if (me.nombre.length > 0 && me.nroDNI.length == 8) {
+              me.condicionDNI = 'DNI VALIDADO';
               document.getElementById("cantidad").disabled = false;
               document.getElementById("cupon").disabled = false;
             } else {
@@ -4601,6 +4602,7 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // import VeeValida
 
           if (me.nombre != undefined) {
             if (me.nombre.length > 0 && me.nroDNI.length == 8) {
+              me.condicionDNI = 'DNI VALIDADO';
               document.getElementById("cantidad").disabled = false;
               document.getElementById("cupon").disabled = false;
             } else {
@@ -5177,6 +5179,7 @@ Vue.use(vue_toasted__WEBPACK_IMPORTED_MODULE_0___default.a); // import VeeValida
 
           if (me.nombre != undefined) {
             if (me.nombre.length > 0 && me.nroDNI.length == 8) {
+              me.condicionDNI = 'DNI VALIDADO';
               document.getElementById("cantidad").disabled = false;
               document.getElementById("cupon").disabled = false;
             } else {
@@ -9996,7 +9999,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nth,td{\r\n        text-align: center;\n}\n.g-center{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\n}\r\n", ""]);
+exports.push([module.i, "\nth,td{\r\n        text-align: center;\n}\n@media (min-width: 500px) {\n.g-center{\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    flex-wrap: nowrap;\n}\n}\r\n", ""]);
 
 // exports
 

@@ -161,10 +161,14 @@ export default {
 th,td{
         text-align: center;
     }
+  
+  @media (min-width: 500px) {
   .g-center{
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: nowrap;
   }
+}
 </style>
 
