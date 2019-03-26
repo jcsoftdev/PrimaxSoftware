@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>JCsoftIA</title>
+  <title>PrimaxSoftware</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/plantilla.css">
   <script type="text/javascript" src="js/instascan.min.js"></script>
   <script type="text/javascript" src="js/toastr.js"></script>
-  <link rel="icon" type="image/png" href="/imágenes/mifavicon.png" />
+  <link rel="icon" type="image/png" href="./img/logo-ampliado.png" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
   <!-- Última versión compilada y minificada -->
   {{-- <script src="https://tecactus-4b42.kxcdn.com/reniec-sunat-js.min.js"></script> --}}
@@ -67,36 +67,36 @@
           <ul class="nav navbar-nav">
             
             <!-- Notifications: style can be found in dropdown.less -->
-            <li class="dropdown notifications-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-bell-o"></i>
-                <span class="label label-warning">10</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li class="header">You have 10 notifications</li>
-                <li>
-                  <!-- inner menu: contains the actual data -->
-                  <ul class="menu">
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                    {{-- <li class="dropdown notifications-menu">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-bell-o"></i>
+                        <span class="label label-warning">10</span>
                       </a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="footer"><a href="#">View all</a></li>
-              </ul>
-            </li>
+                      <ul class="dropdown-menu">
+                        <li class="header">You have 10 notifications</li>
+                        <li>
+                          
+                          <ul class="menu">
+                            <li>
+                              <a href="#">
+                                <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                              </a>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="footer"><a href="#">View all</a></li>
+                      </ul>
+                    </li> --}}
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="./img/logo.png" class="user-image" alt="User Image">
-                <span class="hidden-xs">Juan Carlos Valencia López</span>
+                <img src="./img/logo-ampliado.png" class="user-image"  alt="User Image">
+                <span class="hidden-xs">{{Auth::user()->usuario}}</span>
               </a>
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
-                  <img src="./img/logo.png" class="img-circle" alt="User Image">
+                  <img src="./img/logo.png" class="img-circle"  alt="User Image">
 
                   <p>
                     {{Auth::user()->usuario}}
@@ -148,10 +148,10 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="./img/logo.png" class="img-circle" alt="User Image">
+              <img src="./img/logo-ampliado.png" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-              <p>Juan Carlos Valencia López</p>
+              <p>{{Auth::user()->usuario}}</p>
               <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
           </div>

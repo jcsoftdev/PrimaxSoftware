@@ -17,6 +17,7 @@ class CuponController extends Controller
     {
         $condicion = $request->condicion;
         $cupones = Cupon::select(
+            
             'cupons.id',
             'cupons.serial',
             'cupons.condicion',
@@ -42,10 +43,16 @@ class CuponController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   try{
+            DB::beginTransaction();
         $cantidad = $request->cantidad;
         $meses = $request->meses;
-        $this->InsertCantCupon($meses, $cantidad);
+        $this->InsertCantCupon($cantidad,$meses);
+            DB::commit();
+
+        } catch (Exception $e){
+            DB::rollBack();
+        }
     }
 
     /**
@@ -141,6 +148,16 @@ class CuponController extends Controller
         $cupon = Cupon::where("cupons.serial",'=',"$cupon")->where("cupons.condicion",'=','1')->get();
         return $cupon;
     }
+    public function getCantidad(Request $request){
+        $condicion = $request->condicion;
+        $cupones = Cupon::select(
+            'cupons.id',
+            'cupons.serial',
+            'cupons.condicion',
+            'cupons.expiracion'
+            )->where('cupons.condicion','=',$condicion)->count();
+        return $cupones;
+    }
     // public function desactivar(Request $request)
     // {
     //     // if (!$request->ajax()) return redirect('/');
@@ -155,4 +172,75 @@ class CuponController extends Controller
     //     $cupon->condicion = '1';
     //     $cupon->save();
     // }
+
+    public function actualizar(Request $request){
+        //  if (!$request->ajax()) return redirect('/');
+        $meses = $request->meses;
+        try{
+            DB::beginTransaction();
+
+            //Actualizar la table cupones
+            DB::table('cupons')
+            ->where('condicion', 2)
+            ->update([
+                'condicion' => 1,
+                'actualizaciones' => DB::raw('actualizaciones + 1'),
+                'expiracion'=> Carbon::now()->addMonths($meses)
+                
+
+                ]);
+
+            DB::commit();
+
+        } catch (Exception $e){
+            DB::rollBack();
+        }
+
+    }
+    public function activar(){
+        //  if (!$request->ajax()) return redirect('/');
+        
+        try{
+            DB::beginTransaction();
+
+            //Actualizar la table cupones
+            DB::table('cupons')
+            ->where('condicion', 0)
+            ->update(['condicion' => 1]);
+            
+            DB::commit();
+
+        } catch (Exception $e){
+            DB::rollBack();
+        }
+
+    }
+    public function desactivaInf(){
+        try{
+            DB::beginTransaction();
+            //En este caso no eliminamos la tabla, sino que desactivamos al cupon de manera indefinida y le agregamos el valor de 3 en condicion
+            //Actualizar la table cupones
+            DB::table('cupons')
+            ->where('actualizaciones', '>', 4)
+            ->update(['condicion' => 3]);
+            
+            DB::commit();
+
+        } catch (Exception $e){
+            DB::rollBack();
+        }
+    }
+    public function vencimiento(){
+        try{
+            DB::beginTransaction();
+            DB::table('cupons')
+            ->where('expiracion','<', Carbon::now('America/Lima'))
+            ->update(['condicion' => 2]);
+            
+            DB::commit();
+
+        } catch (Exception $e){
+            DB::rollBack();
+        }
+    }
 }

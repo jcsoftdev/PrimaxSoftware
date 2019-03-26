@@ -26,9 +26,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::group(['middleware' => ['Administrador']], function () {
         // Cupones
         Route::get('/cupon', 'CuponController@index');
+        Route::get('/cupon/cantidad', 'CuponController@getCantidad');
         Route::post('/cupon/crear', 'CuponController@store');
         Route::get('/cupon/{cupon}', 'CuponController@buscarCuponSerial');
-        Route::get('/cupon/desactivar', 'CuponController@desactivar');
+        // Route::get('/cupon/desactivar', 'CuponController@desactivar');
+        Route::put('/cupon/actualizar', 'CuponController@actualizar');
+        Route::put('/cupon/desactivaInf', 'CuponController@desactivaInf');
+        Route::put('/cupon/activar', 'CuponController@activar');
+        Route::put('/cupon/vencimiento', 'CuponController@vencimiento');
         // login
 
         // Marca

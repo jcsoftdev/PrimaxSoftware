@@ -21,7 +21,7 @@
     <ul class="treeview-menu">
       <li @click="menu=1"><a href="#"><i class="fa fa-circle-o"></i> Venta de Primax Gas</a></li>
       <li @click="menu=2"><a href="#"><i class="fa fa-circle-o"></i> Venta de Pecsa Gas</a></li>
-      <li @click="menu=3"><a href="#"><i class="fa fa-circle-o"></i> Venta VIP</a></li>
+      <li @click="menu=3"><a href="#"><i class="fa fa-circle-o"></i> Venta de Pro Gas</a></li>
     </ul>
     
   </li>
@@ -34,7 +34,7 @@
     </a>
     <ul class="treeview-menu">
       <li @click="menu=4"><a href="#"><i class="fa fa-circle-o"></i> Administrar Usuarios</a></li>
-      <li @click="menu=5"><a href="#"><i class="fa fa-circle-o"></i> Administrar Roles</a></li>
+      <li @click="menu=5"><a href="#"><i class="fa fa-circle-o"></i> Roles</a></li>
     </ul>
   </li>
   <li class="treeview">
@@ -58,7 +58,7 @@
       </span>
     </a>
     <ul class="treeview-menu">
-       <li @click="menu=8"><a href="#"><i class="fa fa-circle-o"></i> Generador y Reporte de Codigos</a></li>
+       <li @click="menu=8"><a href="#"><i class="fa fa-circle-o"></i>Administrar Codigos</a></li>
       <li @click="menu=9"><a href="#"><i class="fa fa-circle-o"></i>Administrar Marcas</a></li>
     </ul>
   </li>

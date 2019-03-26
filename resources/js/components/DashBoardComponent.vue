@@ -1,14 +1,26 @@
 <template>
   <div class="container-fluid">
-    <div class="col-md-6">
-      <canvas id="pie-chart" class="pie-chart"></canvas>
+    <section class="content-header">
+        <h1 >
+            <span >DashBoard</span>
+            <small >Estadicticas en Graficos</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>
+    </section>
+    <div class="graficos g-center">
+      <div class="col-md-6 ">
+        <canvas id="pie-chart" class="pie-chart"></canvas>
+      </div>
+      <div class="col-md-6 r">
+        <canvas id="bar-chart" class="pie-chart"></canvas>
+      </div>
     </div>
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
       <canvas id="pie-chart" class="pie-chart"></canvas>
-    </div>
-    <div class="col-md-6">
-      <canvas id="pie-chart" class="pie-chart"></canvas>
-    </div>
+    </div> -->
     
   </div>
 </template>
@@ -34,19 +46,67 @@ export default {
               type: 'pie',
               data: {
                 labels: ["Primax", "Pecsa", "ProGAs"],
-                datasets: [{
-                  label: "Population (millions)",
-                  backgroundColor: ["#55ddff", "#8e5ea2","#3cba9f"],
-                  data: [me.TotalPago[0],me.TotalPago[1],me.TotalPago[2]]
-                }]
+                "datasets":[
+                  { "label":"Ingreso en Soles",
+                    "data":[me.TotalPago[0],me.TotalPago[1],me.TotalPago[2]],
+                    "fill":false,
+                    "backgroundColor":["rgba(255, 99, 132, 0.2)","rgba(255, 205, 86, 0.2)","rgba(75, 192, 192, 0.2)"],
+                    "borderColor":["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(54, 162, 235)"],
+                    "borderWidth":1
+                  }
+                ]
               },
               options: {
                 title: {
                   display: true,
-                  text: 'Las ventas de cada balon de gas'
+                  text: 'Ingresos en soles'
                 }
               }
           });
+          new Chart(document.getElementById("bar-chart"),
+          {   "type":"bar",
+              "data":
+              {"labels":["Primax", "Pecsa", "ProGAs"],
+                "datasets":[
+                  { "label":"Ingreso en Soles",
+                    "data":[me.TotalPago[0],me.TotalPago[1],me.TotalPago[2]],
+                    "fill":false,
+                    "backgroundColor":["rgba(255, 99, 132, 0.2)","rgba(255, 205, 86, 0.2)","rgba(75, 192, 192, 0.2)"],
+                    "borderColor":["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(54, 162, 235)"],
+                    "borderWidth":1
+                  }
+                ]
+              },
+              "options":{
+                "scales":{
+                  "yAxes":[
+                    {
+                      "ticks":{"beginAtZero":true}
+                    }
+                  ]
+                }
+              }
+          });
+          // new Chart(document.getElementById("bar-chart"), {
+          //     type: 'bar',
+          //     data: {
+          //       labels: ["Primax", "Pecsa", "ProGAs"],
+          //       datasets: [
+          //         {
+          //           label: "Ventas",
+          //           backgroundColor: ["rgba(255, 99, 132, 0.2)","rgba(255, 205, 86, 0.2)","rgba(75, 192, 192, 0.2)"],
+          //           data: [me.TotalPago[0],me.TotalPago[1],me.TotalPago[2]]
+          //         }
+          //       ]
+          //     },
+          //     options: {
+          //       legend: { display: false },
+          //       title: {
+          //         display: true,
+          //         text: 'Ingresos en soles'
+          //       }
+          //     }
+          // });
       },
       obtenerDetalles(){
           var me = this;
@@ -97,3 +157,14 @@ export default {
       }
 }
 </script>
+<style>
+th,td{
+        text-align: center;
+    }
+  .g-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
+

@@ -13,14 +13,16 @@
                 </section>
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
-                <div class="datepicker">
-                    <label >Fecha</label>
-                        <datepicker v-model="date" name="fecha" 
-                            @opened="datepickerAbierto" 
-                            @selected="fechaSeleccionada" 
-                            @closed="datepickerCerrado"
-                            :format="customFormatter"
-                        ></datepicker>
+                <div class="container">
+                    <div class="datepicker">
+                        <label class="fecha">Fecha</label>
+                            <datepicker v-model="date" name="fecha" 
+                                @opened="datepickerAbierto" 
+                                @selected="fechaSeleccionada" 
+                                @closed="datepickerCerrado"
+                                :format="customFormatter"
+                            ></datepicker>
+                    </div>
                 </div>
                 <template>
                     <div class="col-md-6">
@@ -42,12 +44,12 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="primax in ArrayGas1" :key="primax.idusuario">
-                                            <th scope="col" v-text="primax.idusuario"></th>
-                                            <th scope="col" v-text="primax.usuario"></th>
-                                            <th scope="col" v-text="primax.nombre + ' ' + primax.apellidos"></th>
+                                            <td scope="col" v-text="primax.idusuario"></td>
+                                            <td scope="col" v-text="primax.usuario"></td>
+                                            <td scope="col" v-text="primax.nombre + ' ' + primax.apellidos"></td>
                                             
-                                            <th scope="col" v-text="primax.CantVenta"></th>
-                                            <th scope="col" class="label label-warning" v-text="'S/ '+primax.IngresoT"></th>
+                                            <td scope="col" v-text="primax.CantVenta"></td>
+                                            <td scope="col" class="label label-warning" v-text="'S/ '+primax.IngresoT"></td>
                                         </tr>
                                         <tr style="background-color: #CEECF5;">
                                             <td colspan="3" align="right"><strong>Total</strong></td>
@@ -82,11 +84,11 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="pecsa in ArrayGas2" :key="pecsa.idusuario">
-                                            <th scope="col" v-text="pecsa.idusuario"></th>
-                                            <th scope="col" v-text="pecsa.usuario"></th>
-                                            <th scope="col" v-text="pecsa.nombre + ' ' + pecsa.apellidos"></th>
-                                            <th scope="col" v-text="pecsa.CantVenta"></th>
-                                            <th scope="col" class="label label-warning" v-text="'S/ '+pecsa.IngresoT"></th>
+                                            <td scope="col" v-text="pecsa.idusuario"></td>
+                                            <td scope="col" v-text="pecsa.usuario"></td>
+                                            <td scope="col" v-text="pecsa.nombre + ' ' + pecsa.apellidos"></td>
+                                            <td scope="col" v-text="pecsa.CantVenta"></td>
+                                            <td scope="col" class="label label-warning" v-text="'S/ '+pecsa.IngresoT"></td>
                                         </tr>
                                         <tr style="background-color: #CEECF5;">
                                             <td colspan="3" align="right"><strong>Total</strong></td>
@@ -121,11 +123,11 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="pro in ArrayGas3" :key="pro.idusuario">
-                                            <th scope="col" v-text="pro.idusuario"></th>
-                                            <th scope="col" v-text="pro.usuario"></th>
-                                            <th scope="col" v-text="pro.nombre + ' ' + pro.apellidos"></th>
-                                            <th scope="col" v-text="pro.CantVenta"></th>
-                                            <th scope="col" class="label label-warning" v-text="'S/ '+pro.IngresoT"></th>
+                                            <td scope="col" v-text="pro.idusuario"></td>
+                                            <td scope="col" v-text="pro.usuario"></td>
+                                            <td scope="col" v-text="pro.nombre + ' ' + pro.apellidos"></td>
+                                            <td scope="col" v-text="pro.CantVenta"></td>
+                                            <td scope="col" class="label label-warning" v-text="'S/ '+pro.IngresoT"></td>
                                             
                                         </tr>
                                         <tr style="background-color: #CEECF5;">
@@ -260,6 +262,20 @@
     display: inline-block;
     width: 90%
 }
-
+label.fecha{
+    width: auto;
+    display: inline-block;
+    padding-right: 2rem;
+}
+.vdp-datepicker{
+    display: inline-block
+}
+.datepicker{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
 </style>
 

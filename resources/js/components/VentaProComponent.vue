@@ -16,11 +16,11 @@
          <div class="mi-contenido container-fluid">
              <section class="content">
                 <form action="">
-                    <div class="datos d-flex" >
+                    <div class="datos d-flex f-start" >
                         <div class="dni">
                             <label class="" for="dni">DNI</label>
                             <!-- <input type="text" name="DNI" id="dni" pattern="[0-9]{9}" placeholder="Ingrese el Nro de DNI"> -->
-                            <input v-model="nroDNI"  :maxlength="8" v-on:keyup="buscarDNI(); getPersonaId(nroDNI)" id="dni" class="onlyNum"  placeholder="Ingrese DNI" >
+                            <input v-model="nroDNI"  :maxlength="8" v-on:keyup="buscarDNI(); getPersonaId(nroDNI)" type="number" id="dni" class="onlyNum"  placeholder="Ingrese DNI" >
                             
                         </div>
                         
@@ -44,22 +44,22 @@
 
                         <div class="cantidad onlyNum">
                             <label class="" for="cantidad" >Cantidad de balones</label>
-                            <input v-model="cantidad" id="cantidad" v-on:keyup="calcularTotal()" type="text" class="onlyNum" placeholder="Cantidad de balones" value="">
+                            <input v-model="cantidad" id="cantidad" v-on:keyup="calcularTotal()" type="number" class="onlyNum" placeholder="Cantidad de balones" value="">
                             
                         </div>
                         <div class="cupon">
                             <label class="" for="cupon">Utiliza cupon?</label>
                             <input type="button" @click="abrirModal()" class="btn btn-success " value="Escanear el codigo QR" data-toggle="modal" data-target="#myModal" id="cupon">
                         </div>
-                        <div class="telefono">
+                        <!-- <div class="telefono">
                             <label class="" for="numero">Numero Celular</label>
                             <input id="telefono" v-model="telefono" onKeyUp="" type="number" class="onlyNum" pattern="[0-9] {9}" >
-                        </div>
+                        </div> -->
                     </div>
                     
                     
 
-                    <div  class="datos d-flex flex-r" >
+                    <div  class="datos d-flex f-start flex-r" >
                         <div class="col-sm-6"></div>
                         <div class="col-sm-6">
                             <div class="precio">
@@ -130,7 +130,7 @@
                                 <!-- <button @click="stopScanner" type="button" class="close" data-dismiss="modal">&times;</button> -->
                                 <h4 class="modal-title">Escanee el codigo QR</h4>
                             </div>
-                            <div class="modal-body d-flex center">
+                            <div class="modal-body d-flex f-start center">
                                 
                                 <video id="modalCamera" class="center ">
                                     
@@ -152,12 +152,15 @@
 
 <script>
     import Toasted from 'vue-toasted';
-    import { async } from 'q';
+import { async } from 'q';
 
    
 
     // you can also pass options, check options reference below
     Vue.use(Toasted);
+    // import VeeValidate from 'vee-validate';
+    // Vue.use(VeeValidate);
+    // you can call like this in your component
     
     export default {
         data() {
@@ -218,10 +221,11 @@
                         me.aMaterno= response.data.apellidoMaterno;
                         if (me.nombre != undefined) {
                             if (me.nombre.length > 0 && me.nroDNI.length == 8) {
-                                me.condicionDNI = 'DNI Validado'
+                               
                                 document.getElementById("cantidad").disabled = false;
                                 document.getElementById("cupon").disabled = false;
                             }else{
+                                me.condicionDNI = 'DNI No Validado'
                                 document.getElementById("cantidad").disabled = true;
                                 document.getElementById("cupon").disabled = true;
                                 document.getElementById("vender").disabled = true;
@@ -236,7 +240,8 @@
                         
                     })
                     .catch(e => {
-                        console.log(e);
+                        // console.log(e);
+                        console.log('DNI puede que no existe');
                     });
                 }else{
                     this.nombre = undefined;
@@ -252,7 +257,8 @@
             },
             scanearQR(){
                 let me = this;
-                me.scanner = new Instascan.Scanner({ video: document.getElementById('modalCamera') });
+                
+                me.scanner = new Instascan.Scanner({ video: document.getElementById('modalCamera'), mirror: false , });
                 me.scanner.addListener('scan', function (content) {
                     
                     if (me.codigoQR.indexOf(content) == -1) {
@@ -292,13 +298,24 @@
                     // me.scanner.stop();
                 });
                 Instascan.Camera.getCameras().then(function (cameras) {
-                    if (cameras.length > 0) {
-                    me.scanner.start(cameras[0]);
-                    } else {
-                    console.error('No cameras found.');
+                    if (cameras.length == 3) {
+                        me.scanner.start(cameras[2]);
+                    } else if(cameras.length == 2) {
+                        me.scanner.start(cameras[1]);
+                    }else if(cameras.length > 0) {
+                        me.scanner.start(cameras[0]);
+                    }else{
+                        console.error('No cameras found.');
                     }
                 }).catch(function (e) {
                     console.error(e);
+
+                    Swal.fire(
+                        'No se puede acceder a la camara',
+                        'Es probable que su navegador bloqueo el acceso a la camara',
+                        'error'
+                    )
+                    this.stopScanner();
                 });   
                 
             },
@@ -320,14 +337,11 @@
                 
                 this.scanearQR();
             },
-            getMarca(){ 
+            getMarca(){
                 let me = this;
                 var url = '/marca';
                 axios.get ( url ).then( function (response){
                     var respuesta = response.data;
-                    // console.log(respuesta);
-                    // console.log(respuesta[0].nombre);
-                    // console.log(respuesta.nombre);
                     me.idmarca = respuesta[2].id;
                     me.marca = (respuesta[2].nombre);
                     me.precioMarca = respuesta[2].precio;
@@ -558,6 +572,10 @@
                 })
                 .then(function (response) {
                 if (response=!null) {
+                    // for (let i = 0; i < me.codigoQR.length; i++) {
+                    //     me.desactivarCupon(i+1);
+                        
+                    // }
 
                     Swal.fire({
                         type: 'success',
@@ -565,6 +583,9 @@
                         showConfirmButton: false,
                         timer: 2000
                     });
+                    // document.getElementById("cantidad").disabled = true;
+                    document.getElementById("vender").disabled = true;
+                     me.condicionDNI = 'Ingrese Numero de DNI'
                     me.precio = 0;
                     me.descuento = 0;
                     me.precioTotal = 0;
@@ -586,11 +607,8 @@
                 });
 
             },
-            registrarVentaCupon(){
-                
-            },
             desactivarCupon(id){
-                console.log('entrandfo a desactivar cupon');
+                console.log('entrando a desactivar cupon');
                 axios.put('/cupon/desactivar', {
                     id : id,
                 })
@@ -685,6 +703,11 @@ p{
 }
 .d-flex{
     display: flex;
+    
+}
+.f-start{
+    align-items: inherit !important;
+    justify-content: flex-start !important;
 }
 .flex-r{
     flex-direction: row !important;
